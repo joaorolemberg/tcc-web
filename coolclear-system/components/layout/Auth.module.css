@@ -1,0 +1,12 @@
+.mainBackground {
+    background-color: #EEEEEE;
+    width: 100wh;
+    min-height: 100vh;
+}
+
+.header {
+    background-color: green;
+    min-height: 200px;
+    position: relative;
+    z-index: 0;
+}
