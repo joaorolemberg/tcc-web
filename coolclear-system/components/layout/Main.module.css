@@ -1,0 +1,6 @@
+.header {
+    background-color: #2E7D32;
+    min-height: 200px;
+    position: relative;
+    z-index: 0;
+}

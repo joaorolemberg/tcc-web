@@ -1,8 +1,9 @@
 import Router from 'next/router';
 import React, { useEffect, useState } from 'react';
 import useAuth from '../hooks/useAuth';
+import Main from '../components/layout/Main';
 
-export default function Home() {
+function Home() {
   const { isAuthenticated, logout } = useAuth();
   const [loading, setLoading] = useState(true);
 
@@ -32,3 +33,5 @@ export default function Home() {
     </div>
   );
 }
+Home.layout = Main;
+export default Home;

@@ -6,6 +6,7 @@ import Head from 'next/head';
 import { SnackbarProvider } from 'notistack';
 import { AuthContextProvider } from '../context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../styles/globals.css';
 
 function MyApp({ Component, pageProps }) {
   const Layout = Component.layout || (({ children }) => <div>{children}</div>);
