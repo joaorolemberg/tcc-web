@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Container } from 'reactstrap';
 import styles from './Auth.module.css';
 
 function Auth({ children }) {

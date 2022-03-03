@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import useAuth from '../hooks/useAuth';
 
 export default function Home() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,5 +20,15 @@ export default function Home() {
   if (loading) {
     return <div> carregando</div>;
   }
-  return <div> home</div>;
+  return (
+    <div>
+      <button
+        onClick={() => (logout())}
+        type="button"
+      >
+        logout
+      </button>
+
+    </div>
+  );
 }

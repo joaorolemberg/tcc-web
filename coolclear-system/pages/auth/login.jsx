@@ -1,49 +1,96 @@
 import Router from 'next/router';
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  Col, Row, Button, Card, CardHeader, CardFooter, CardBody, Input,
+  Col,
+  Row,
+  Button,
+  Card,
+  CardHeader,
+  CardFooter,
+  CardBody,
+  Input,
+  Form,
+  Spinner,
 } from 'reactstrap';
+import { useSnackbar } from 'notistack';
 import useAuth from '../../hooks/useAuth';
 import Auth from '../../components/layout/Auth';
+import styles from '../../styles/loginPage.module.css';
 
 function index() {
-  const { setIsAuthenticated } = useAuth();
+  const { login, isAuthenticating } = useAuth();
+  const [inputs, setInputs] = useState({ email: '', password: '' });
+  const { enqueueSnackbar } = useSnackbar();
+  const onInput = (value, type) => {
+    setInputs((currState) => ({ ...currState, [type]: value }));
+  };
+
+  const handleLogin = () => {
+    const resp = login(inputs);
+    if (resp.login) {
+      Router.replace('/');
+    } else {
+      enqueueSnackbar(resp.text, { variant: 'error' });
+    }
+  };
+
   return (
     <div>
       <Row className="justify-content-center">
         <Col xl={4} lg={5} md={5} sm={6} xs={10}>
           <Card>
-            <CardHeader className="text-center">
+            <CardHeader className={styles.systemName}>
               CoolClear System
             </CardHeader>
             <CardBody className="text-center">
-              <Input className="mb-3" bsSize="sm" placeholder="Email" />
-              <Input className="mb-3" bsSize="sm" placeholder="Senha" />
-              <Button
-                className="text-center"
-                color="success"
-                size="sm"
-                onClick={() => {
-                  setIsAuthenticated(true);
-                  Router.push('/');
+              <Form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleLogin();
                 }}
-                type="button"
               >
-                {' '}
-                Acessar
-                {' '}
-
-              </Button>
+                <Input
+                  className="mb-3"
+                  bsSize="sm"
+                  placeholder="Email"
+                  type="text"
+                  value={inputs.email}
+                  onChange={(e) => onInput(e.target.value, 'email')}
+                />
+                <Input
+                  className="mb-3"
+                  bsSize="sm"
+                  type="password"
+                  placeholder="Senha"
+                  value={inputs.password}
+                  onChange={(e) => onInput(e.target.value, 'password')}
+                />
+                <Button
+                  className="text-center"
+                  color="success"
+                  size="sm"
+                  type="submit"
+                  disabled={inputs.email === '' || inputs.password === ''}
+                >
+                  {isAuthenticating ? (
+                    <>
+                      <Spinner size="sm" />
+                      Autenticando...
+                    </>
+                  ) : 'Acesssar'}
+                </Button>
+              </Form>
             </CardBody>
-            <CardFooter className="text-end" style={{fontWeight: 'lighter', fontSize: '0.7em'}}>
+            <CardFooter
+              className="text-end"
+              style={{ fontWeight: 'lighter', fontSize: '0.7em' }}
+            >
               Esqueceu a senha?
             </CardFooter>
           </Card>
         </Col>
       </Row>
-
     </div>
-
   );
 }
 index.layout = Auth;
