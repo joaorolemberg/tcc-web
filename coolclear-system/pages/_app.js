@@ -7,6 +7,7 @@ import { SnackbarProvider } from 'notistack';
 import { AuthContextProvider } from '../context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/globals.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 function MyApp({ Component, pageProps }) {
   const Layout = Component.layout || (({ children }) => <div>{children}</div>);

@@ -1,41 +1,33 @@
 import React, { useState } from 'react';
 import {
-  Nav, NavItem, NavLink, NavbarBrand, NavbarToggler, Navbar, Collapse,
+  Nav, NavItem, NavLink, Collapse,
 } from 'reactstrap';
+import routesAdmin from '../../routes';
+import styles from './Sidebar.module.css';
 
-function Sidebar() {
-  const [status, setStatus] = useState(false);
+// eslint-disable-next-line react/prop-types
+function Sidebar({ sidebarOpen }) {
+  // eslint-disable-next-line no-unused-vars
+  const [routes, setRoutes] = useState(routesAdmin('adm'));
   return (
     <div>
-      <Navbar
-        color="faded"
-        light
-      >
-        <NavbarBrand
-          className="me-auto"
-          href="/"
-        >
-          reactstrap
-        </NavbarBrand>
-        <NavbarToggler
-          className="me-2"
-          onClick={() => setStatus((currState) => (!currState))}
-        />
-        <Collapse navbar isOpen={status}>
-          <Nav navbar>
-            <NavItem>
-              <NavLink href="/components/">
-                Components
+
+      <Collapse horizontal isOpen={sidebarOpen} className={styles.collapse}>
+        <Nav navbar>
+          {routes.map((route) => (
+            <NavItem key={route.path} className={styles.navItem}>
+              <NavLink className={styles.navLink} href={route.path}>
+                <span>
+                  {' '}
+                  <i className={route.icon} style={{ marginRight: '8px' }} />
+                  {' '}
+                </span>
+                {route.name}
               </NavLink>
             </NavItem>
-            <NavItem>
-              <NavLink href="https://github.com/reactstrap/reactstrap">
-                GitHub
-              </NavLink>
-            </NavItem>
-          </Nav>
-        </Collapse>
-      </Navbar>
+          ))}
+        </Nav>
+      </Collapse>
     </div>
   );
 }

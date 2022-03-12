@@ -1,0 +1,27 @@
+.collapse {
+    background-color: #ffffff;
+     max-width: 300px;
+     min-width:300px;
+     min-height:94vh
+}
+
+.navItem {
+    text-align: start;
+    padding-left: 70px;
+    border-bottom-style: solid;
+    border-width: 1px;
+    border-color: grey;
+    font-size: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.navItem:hover{
+    background-color: #2E7D32;
+}
+.navLink {
+    color: grey;
+}
+
+.navLink:hover{
+    color: white ;
+}

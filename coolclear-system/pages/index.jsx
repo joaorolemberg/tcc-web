@@ -1,7 +1,9 @@
 import Router from 'next/router';
 import React, { useEffect, useState } from 'react';
+import { Col, Row } from 'reactstrap';
 import useAuth from '../hooks/useAuth';
 import Main from '../components/layout/Main';
+import CardWithHeader from '../components/Card/CardWithHeader';
 
 function Home() {
   const { isAuthenticated, logout } = useAuth();
@@ -23,12 +25,18 @@ function Home() {
   }
   return (
     <div>
-      <button
-        onClick={() => (logout())}
-        type="button"
-      >
-        logout
-      </button>
+      <Row className="bg-dark">
+        <Col>
+          <CardWithHeader title="Próximos atendimentos">
+            Teste
+          </CardWithHeader>
+        </Col>
+        <Col>
+          <CardWithHeader title="Próximos atendimentos">
+            Teste
+          </CardWithHeader>
+        </Col>
+      </Row>
 
     </div>
   );
