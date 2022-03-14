@@ -6,7 +6,7 @@ import Main from '../components/layout/Main';
 import CardWithHeader from '../components/Card/CardWithHeader';
 
 function Home() {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

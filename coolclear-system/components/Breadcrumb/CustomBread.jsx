@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { Breadcrumb, BreadcrumbItem, Card } from 'reactstrap';
 
-const CustomBread = function a({ classe }) {
+const CustomBread = function a() {
   const router = useRouter();
   const [array, setArray] = useState([]);
   const breadCrumbName = (splitedPath) => {
@@ -75,21 +75,21 @@ const CustomBread = function a({ classe }) {
               )}
             </BreadcrumbItem>
           ))}
-          {/* <BreadcrumbItem className="d-block d-sm-none">
-          XS
-        </BreadcrumbItem>
-        <BreadcrumbItem className="d-none d-sm-block d-md-none">
-          SM
-        </BreadcrumbItem>
-        <BreadcrumbItem className="d-none d-md-block d-lg-none">
-          MD
-        </BreadcrumbItem>
-        <BreadcrumbItem className="d-none d-lg-block d-xl-none">
-          LG
-        </BreadcrumbItem>
-        <BreadcrumbItem className="d-none d-xl-block">
-          XL
-        </BreadcrumbItem> */}
+          <BreadcrumbItem className="d-block d-sm-none">
+            XS
+          </BreadcrumbItem>
+          <BreadcrumbItem className="d-none d-sm-block d-md-none">
+            SM
+          </BreadcrumbItem>
+          <BreadcrumbItem className="d-none d-md-block d-lg-none">
+            MD
+          </BreadcrumbItem>
+          <BreadcrumbItem className="d-none d-lg-block d-xl-none">
+            LG
+          </BreadcrumbItem>
+          <BreadcrumbItem className="d-none d-xl-block">
+            XL
+          </BreadcrumbItem>
         </Breadcrumb>
       </Card>
 
