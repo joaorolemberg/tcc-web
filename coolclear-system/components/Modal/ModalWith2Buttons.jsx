@@ -12,14 +12,12 @@ const ModalWith2Buttons = function b({
   declineAction,
   children,
   size,
-  onExit,
 }) {
   return (
     <Modal
       isOpen={modalState}
       toggle={() => setModalState(!modalState)}
       size={size}
-      onExit={() => onExit()}
     >
       <ModalHeader toggle={() => setModalState(!modalState)}>{title}</ModalHeader>
       <Form onSubmit={(e) => { e.preventDefault(); confirmAction.action(); }}>

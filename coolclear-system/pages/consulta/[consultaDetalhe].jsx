@@ -1,5 +1,8 @@
 import React from 'react';
+import Main from '../../components/layout/Main';
 
-export default function index() {
-  return <div>Consulta detalhe</div>;
+function index() {
+  return <div style={{marginTop:'50px'}}>Consulta detalhe</div>;
 }
+index.layout = Main;
+export default index;

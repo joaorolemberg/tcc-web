@@ -6,19 +6,25 @@ import {
   Row,
   Button,
 } from 'reactstrap';
+import DropdownFilter from '../DropdownFilter/DropdownFilter';
 import SearchBar from '../Search/SearchBar';
 
-const MainCardHeader = function c({ title, add, search }) {
-  if (add && search) {
+const MainCardHeader = function c({
+  title, add, search, filter,
+}) {
+  if (add && search && filter) {
     return (
       <Row>
-        <Col xl="4" lg={5} md={5} sm={4} xs={12} className="align-self-center">
+        <Col xl="4" lg={4} md={4} sm={12} xs={12} className="align-self-center">
           <CardTitle style={{ fontSize: '24px' }}>
             {title}
           </CardTitle>
         </Col>
-        <Col xl="7" lg={6} md={6} sm={6} xs={10} className="align-self-center">
-          <SearchBar />
+        <Col xl="5" lg={5} md={5} sm={8} xs={8} className="align-self-center">
+          <SearchBar types={search.types} />
+        </Col>
+        <Col xl="2" lg={2} md={2} sm={2} xs={2} className="align-self-center">
+          <DropdownFilter filter={filter} />
         </Col>
         <Col xl="1" lg={1} md={1} sm={2} xs={2} className="text-end align-self-center">
           <Button

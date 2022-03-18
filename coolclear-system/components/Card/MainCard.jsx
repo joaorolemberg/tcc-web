@@ -7,7 +7,7 @@ import SimplePagination from '../Pagination/SimplePagination';
 import MainCardHeader from './MainCardHeader';
 
 const MainCard = function b({
-  title, search, add, children, pagination,
+  title, search, add, children, pagination, filter,
 }) {
   return (
     <Card body>
@@ -21,7 +21,7 @@ const MainCard = function b({
           marginBottom: '15px',
         }}
       >
-        <MainCardHeader title={title} add={add} search={search} />
+        <MainCardHeader title={title} add={add} search={search} filter={filter} />
       </div>
       {children}
       {pagination

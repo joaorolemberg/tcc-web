@@ -28,6 +28,8 @@ const CustomBread = function a() {
 
       case 'responsavel':
         return 'Responsáveis';
+      case '[consultaDetalhe]':
+        return 'Consulta do paciente';
       default:
         return splitedPath;
     }

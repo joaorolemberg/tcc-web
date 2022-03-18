@@ -27,7 +27,10 @@ const Responsavel = function b() {
       <Row className="justify-content-center">
         <Col xl={10} lg={11} md={11}>
           <MainCard
-            search
+            search={{
+              types: [{ param: 'name', label: 'Nome' },
+                { param: 'email', label: 'Email' }],
+            }}
             add={() => setModalState(true)}
             pagination
             title="Responsáveis"
