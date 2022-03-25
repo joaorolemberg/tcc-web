@@ -58,4 +58,11 @@ export const mocks = {
       data: '2023-12-21T12:00',
     },
   ],
+  pacientData: {
+    nome: 'João',
+    prontuario: '1255430',
+    dataNascimento: '1999-01-08T00:00',
+    sexo: 'M',
+    idade: 23,
+  },
 };
