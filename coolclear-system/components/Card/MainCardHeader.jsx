@@ -41,6 +41,32 @@ const MainCardHeader = function c({
       </Row>
     );
   }
+  if (search && add) {
+    return (
+      <Row>
+        <Col xl="4" lg={4} md={4} sm={12} xs={12} className="align-self-center">
+          <CardTitle style={{ fontSize: '24px' }}>
+            {title}
+          </CardTitle>
+        </Col>
+        <Col xl="5" lg={7} md={7} sm={10} xs={10} className="align-self-center">
+          <SearchBar types={search.types} />
+        </Col>
+        <Col xl="1" lg={1} md={1} sm={2} xs={2} className="text-end align-self-center">
+          <Button
+            style={{ backgroundColor: '#2E7D32', borderRadius: '5px', marginRight: '5px' }}
+            size="sm"
+            className="text-center"
+            onClick={() => add()}
+          >
+            <span>
+              <i className="fa fa-plus text-white" />
+            </span>
+          </Button>
+        </Col>
+      </Row>
+    );
+  }
   if (add) {
     return (
       <Row>
@@ -78,6 +104,7 @@ const MainCardHeader = function c({
       </Row>
     );
   }
+  
 
   return (
     <Row>

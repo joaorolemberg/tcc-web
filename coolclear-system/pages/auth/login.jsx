@@ -25,8 +25,8 @@ function index() {
     setInputs((currState) => ({ ...currState, [type]: value }));
   };
 
-  const handleLogin = () => {
-    const resp = login(inputs);
+  const handleLogin = async () => {
+    const resp = await login(inputs);
     if (resp.login) {
       Router.replace('/');
     } else {

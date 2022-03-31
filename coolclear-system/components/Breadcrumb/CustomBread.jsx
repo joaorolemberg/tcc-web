@@ -23,13 +23,15 @@ const CustomBread = function a() {
       case 'paciente':
         return 'Pacientes';
 
-      case 'condominiums':
-        return 'Condomínios';
+      case 'adicionar':
+        return 'Adicionar';
 
       case 'responsavel':
         return 'Responsáveis';
       case '[consultaDetalhe]':
         return 'Consulta do paciente';
+      case '[pacienteDetalhe]':
+        return 'Nome do paciente';
       default:
         return splitedPath;
     }
@@ -70,7 +72,7 @@ const CustomBread = function a() {
                 </span>
               ) : (
                 <Link href={item.href}>
-                  <a style={{ color: '#fb6340' }} href={item.href}>
+                  <a style={{ color: '#2E7D32' }} href={item.href}>
                     {item.breadcrumb}
                   </a>
                 </Link>

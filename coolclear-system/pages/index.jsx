@@ -6,19 +6,19 @@ import Main from '../components/layout/Main';
 import CardWithHeader from '../components/Card/CardWithHeader';
 
 function Home() {
-  const { isAuthenticated } = useAuth();
+  const { coolClearToken } = useAuth();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    if (isAuthenticated != null) {
-      if (isAuthenticated) {
-        setLoading(false);
-      } else {
+    if (coolClearToken != null) {
+      if (coolClearToken === 'NOTLOGGED') {
         Router.replace('/auth/login');
+      } else {
+        setLoading(false);
       }
     }
-  }, [isAuthenticated]);
+  }, [coolClearToken]);
 
   if (loading) {
     return <div> carregando</div>;

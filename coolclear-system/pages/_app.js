@@ -8,6 +8,8 @@ import { AuthContextProvider } from '../context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/globals.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import Middleware from '../components/HOC/Middleware';
+import { ReRenderProvider } from '../context/ReRenderContext';
 
 function MyApp({ Component, pageProps }) {
   const Layout = Component.layout || (({ children }) => <div>{children}</div>);
@@ -25,9 +27,14 @@ function MyApp({ Component, pageProps }) {
       </Head>
       <SnackbarProvider>
         <AuthContextProvider>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <ReRenderProvider>
+            <Middleware>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </Middleware>
+          </ReRenderProvider>
+
         </AuthContextProvider>
       </SnackbarProvider>
 
