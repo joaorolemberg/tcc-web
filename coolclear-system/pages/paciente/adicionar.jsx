@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Card,
   CardBody,
@@ -17,17 +17,40 @@ import {
 
 } from 'reactstrap';
 import { useSnackbar } from 'notistack';
+import Router from 'next/router';
 import MainCard from '../../components/Card/MainCard';
 import Main from '../../components/layout/Main';
 import ComponentRowList from '../../components/List/ComponentRowList';
 import { mocks } from '../../mocks';
 import ListItemPaciente from '../../components/List/ListItemPaciente';
 import CardConsultBase from '../../components/Card/ConsultPage/CardConsultBase';
-import Router from 'next/router';
+import useAuth from '../../hooks/useAuth';
+import { fetchResponsables } from '../../service/API/responsables';
+import DatalistInput from '../../components/List/DatalistInput';
+import { addPacientAndResponsableAPI, addPacientAndVinculateResponsableAPI } from '../../service/API/pacients';
 
 const AdicionarPaciente = function b() {
   const [modalState, setModalState] = useState(false);
   const [activeTab, setActiveTab] = useState(1);
+  const [loadingAdd, setLoadingAdd] = useState(false);
+
+  const [responsables, setResponsables] = useState([]);
+  const [selectedResponsable, setSelectedResponsable] = useState({});
+
+  const { coolClearToken } = useAuth();
+  useEffect(async () => {
+    if (coolClearToken) {
+      const response = await fetchResponsables({ token: coolClearToken });
+      if (response.status === 200) {
+        const responsablesItems = response.data.results.map((item) => ({
+          key: item.id,
+          label: item.nome,
+          data: item.patients,
+        }));
+        setResponsables(responsablesItems);
+      }
+    }
+  }, [coolClearToken]);
 
   // eslint-disable-next-line no-unused-vars
   const initialState = {
@@ -53,9 +76,65 @@ const AdicionarPaciente = function b() {
     setInputs(initialState);
   };
 
-  const addPacient = () => {
-    console.log('inputsPaciente', inputs);
-    console.log('responsavel', responsavel);
+  const addPacient = async () => {
+    let objectApi = {};
+    setLoadingAdd(true);
+    if (activeTab === 1) { // responsavel existente
+      const resp = responsables.find((item) => {
+        if (item.key === selectedResponsable.key) {
+          return true;
+        }
+        return false;
+      });
+      resp.data.push({
+        first_name: inputs.nome,
+        last_name: '',
+        medical_record_number: inputs.prontuario,
+        implant_date: inputs.dataImplante,
+      });
+      objectApi = {
+        patients: resp.data,
+      };
+      console.log(objectApi);
+      console.log(selectedResponsable.key);
+      const response = await addPacientAndVinculateResponsableAPI({
+        token: coolClearToken,
+        obj: objectApi,
+        idResponsible: selectedResponsable.key,
+      });
+      if (response.status === 200) {
+        enqueueSnackbar('Paciente e Responsável adicionados com sucesso!', { variant: 'success' });
+      } else {
+        enqueueSnackbar('Algo deu errado, tente novamente!', { variant: 'error' });
+        console.log(response);
+      }
+    } else {
+      // adicionar ambos
+      objectApi = {
+        first_name: responsavel.nome,
+        last_name: '',
+        email: responsavel.email,
+        birthdate: '1995-05-11',
+        responsable: {
+          patients: [
+            {
+              first_name: inputs.nome,
+              last_name: '',
+              medical_record_number: inputs.prontuario,
+              implant_date: inputs.dataImplante,
+              // faltou data nascimento e sexo do paciente
+            },
+          ],
+        },
+      };
+      const response = await addPacientAndResponsableAPI({ token: coolClearToken, obj: objectApi });
+      if (response.status === 200) {
+        enqueueSnackbar('Paciente e Responsável adicionados com sucesso!', { variant: 'success' });
+      } else {
+        enqueueSnackbar('Algo deu errado, tente novamente!', { variant: 'error' });
+      }
+    }
+    setLoadingAdd(false);
   };
 
   return (
@@ -204,11 +283,19 @@ const AdicionarPaciente = function b() {
                         <Row className="justify-content-center mt-3">
                           <Col xl={8}>
                             <FormGroup row>
-                              <Label for="vincularResponsavel" sm={2}>
+                              {/* <Label for="vincularResponsavel" sm={2}>
                                 Responsável:
-                              </Label>
+                              </Label> */}
                               <Col sm={10}>
-                                <Input
+                                <DatalistInput
+                                  id="vincularResponsavel"
+                                  placeholder="Buscar responsável"
+                                  items={responsables}
+                                  setSelectedState={setSelectedResponsable}
+                                  label="Responsável"
+                                  idNotInt
+                                />
+                                {/* <Input
                                   id="vincularResponsavel"
                                   name="vincularResponsavel"
                                   type="text"
@@ -217,7 +304,7 @@ const AdicionarPaciente = function b() {
                                     ...currState, nome: e.target.value,
                                   }))}
                                   value={responsavel.nome}
-                                />
+                                /> */}
                               </Col>
                             </FormGroup>
                           </Col>
@@ -271,20 +358,23 @@ const AdicionarPaciente = function b() {
                   </TabContent>
                 </Col>
               </Row>
-              <Row className="mt-3 justify-content-around" >
+              <Row className="mt-3 justify-content-around">
                 <Col sm={3} className="text-center">
                   <Button
                     color="success"
                     type="submit"
+                    disabled={activeTab === 1
+                      ? (!selectedResponsable.key)
+                      : (!(responsavel.email !== '' && responsavel.nome !== ''))}
                   >
-                    Adicionar
+                    {loadingAdd ? 'Adicionando...' : 'Adicionar'}
                   </Button>
                 </Col>
                 <Col sm={3} className="text-center">
                   <Button
                     className="ml-3"
                     type="button"
-                    onClick={()=>{ Router.back() }}
+                    onClick={() => { Router.back(); }}
                   >
                     Cancelar
                   </Button>

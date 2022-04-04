@@ -55,7 +55,6 @@ const Responsavel = function b() {
       }
     }
   }, [coolClearToken, triggerReRender]);
-  
   const confirmAction = async () => {
     setLoadingAdd(true);
     const response = await addResponsableAPI({ inputs, token: coolClearToken });

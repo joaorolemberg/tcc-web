@@ -7,21 +7,14 @@ const instance = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-export async function addResponsableAPI(params) {
-  console.log(params);
+export async function addPacientAndResponsableAPI(params) {
   let data = {};
   const baseFetchUrl = 'responsables';
 
   data = await instance
     .post(
       baseFetchUrl,
-      {
-        first_name: params.inputs.nome,
-        last_name: '',
-        email: params.inputs.email,
-        birthdate: '1995-05-11',
-        responsable: {},
-      },
+      params.obj,
       {
         headers: {
           Authorization: `Bearer ${params.token}`,
@@ -32,10 +25,27 @@ export async function addResponsableAPI(params) {
     .catch((error) => error.response);
   return data;
 }
-
-export async function fetchResponsables(params) {
+export async function addPacientAndVinculateResponsableAPI(params) {
+  let data = {};
+  let baseFetchUrl = 'responsables';
+  baseFetchUrl = `${baseFetchUrl}/${params.idResponsible}`;
+  data = await instance
+    .put(
+      baseFetchUrl,
+      params.obj,
+      {
+        headers: {
+          Authorization: `Bearer ${params.token}`,
+        },
+      },
+    )
+    .then((response) => response)
+    .catch((error) => error.response);
+  return data;
+}
+export async function fetchPatients(params) {
   let response = {};
-  const baseFetchUrl = 'responsables';
+  const baseFetchUrl = 'patients';
   //   if (params.dataInicio) { baseFetchUrl = `${baseFetchUrl}&DataInicio=${params.dataInicio}`; }
   //   if (params.dataFim) { baseFetchUrl = `${baseFetchUrl}&DataFim=${params.dataFim}`; }
 
@@ -57,10 +67,13 @@ export async function fetchResponsables(params) {
     .then((resp) => {
       if (resp.data.results.lenght !== 0) {
         resp.data.results = resp.data.results.map((item) => ({
-          nome: `${item.user.first_name} ${item.user.last_name}`,
-          email: item.user.email,
           id: item.id,
-          patients: item.patients,
+          responsavel: { nome: 'Teste', id: item.responsable_id },
+          nome: `${item.first_name} ${item.last_name}`,
+          prontuario: item.medical_record_number,
+          dataNascimento: '1999-01-08T00:00',
+          dataImplante: '1999-01-08T00:00',
+          sexo: 'M',
         }));
       }
       return resp;
