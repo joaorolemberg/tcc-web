@@ -55,8 +55,8 @@ export async function fetchResponsables(params) {
       },
     )
     .then((resp) => {
-      if (resp.data.results.lenght !== 0) {
-        resp.data.results = resp.data.results.map((item) => ({
+      if (resp.data.lenght !== 0) {
+        resp.data = resp.data.map((item) => ({
           nome: `${item.user.first_name} ${item.user.last_name}`,
           email: item.user.email,
           id: item.id,

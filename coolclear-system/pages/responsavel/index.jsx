@@ -39,8 +39,8 @@ const Responsavel = function b() {
         setFirstRender(false);
         const response = await fetchResponsables({ token: coolClearToken });
         if (response.status === 200) {
-          setResponsables(response.data.results);
-          console.log(response.data.results);
+          setResponsables(response.data);
+          console.log(response.data);
         }
         setLoading(false);
       } else if (reRender) {
@@ -49,7 +49,7 @@ const Responsavel = function b() {
         setReRender(false);
         const response = await fetchResponsables({ token: coolClearToken });
         if (response.status === 200) {
-          setResponsables(response.data.results);
+          setResponsables(response.data);
         }
         setLoading(false);
       }

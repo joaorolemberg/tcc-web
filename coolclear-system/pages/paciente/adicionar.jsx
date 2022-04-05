@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Card,
-  CardBody,
-  CardHeader,
   Col, Row,
   FormGroup,
   Label,
@@ -20,9 +17,6 @@ import { useSnackbar } from 'notistack';
 import Router from 'next/router';
 import MainCard from '../../components/Card/MainCard';
 import Main from '../../components/layout/Main';
-import ComponentRowList from '../../components/List/ComponentRowList';
-import { mocks } from '../../mocks';
-import ListItemPaciente from '../../components/List/ListItemPaciente';
 import CardConsultBase from '../../components/Card/ConsultPage/CardConsultBase';
 import useAuth from '../../hooks/useAuth';
 import { fetchResponsables } from '../../service/API/responsables';
@@ -30,6 +24,7 @@ import DatalistInput from '../../components/List/DatalistInput';
 import { addPacientAndResponsableAPI, addPacientAndVinculateResponsableAPI } from '../../service/API/pacients';
 
 const AdicionarPaciente = function b() {
+  // eslint-disable-next-line no-unused-vars
   const [modalState, setModalState] = useState(false);
   const [activeTab, setActiveTab] = useState(1);
   const [loadingAdd, setLoadingAdd] = useState(false);
@@ -42,7 +37,7 @@ const AdicionarPaciente = function b() {
     if (coolClearToken) {
       const response = await fetchResponsables({ token: coolClearToken });
       if (response.status === 200) {
-        const responsablesItems = response.data.results.map((item) => ({
+        const responsablesItems = response.data.map((item) => ({
           key: item.id,
           label: item.nome,
           data: item.patients,
@@ -59,21 +54,15 @@ const AdicionarPaciente = function b() {
     nascimento: '',
     dataImplante: '',
     dataNascimento: '',
-    sexo: '',
+    sexo: 'M',
   };
   const [inputs, setInputs] = useState(initialState);
   const [responsavel, setResponsavel] = useState({ id: null, nome: '', email: '' });
   const { enqueueSnackbar } = useSnackbar();
 
-  const confirmAction = () => {
-    enqueueSnackbar('Consulta marcada com sucesso', { variant: 'success' });
-  };
-  const declineAction = () => {
-    setModalState(false);
-  };
-
   const resetForm = () => {
     setInputs(initialState);
+    setResponsavel({ id: null, nome: '', email: '' });
   };
 
   const addPacient = async () => {
@@ -91,12 +80,12 @@ const AdicionarPaciente = function b() {
         last_name: '',
         medical_record_number: inputs.prontuario,
         implant_date: inputs.dataImplante,
+        birthdate: inputs.dataNascimento,
+        gender: inputs.sexo,
       });
       objectApi = {
         patients: resp.data,
       };
-      console.log(objectApi);
-      console.log(selectedResponsable.key);
       const response = await addPacientAndVinculateResponsableAPI({
         token: coolClearToken,
         obj: objectApi,
@@ -104,9 +93,9 @@ const AdicionarPaciente = function b() {
       });
       if (response.status === 200) {
         enqueueSnackbar('Paciente e Responsável adicionados com sucesso!', { variant: 'success' });
+        resetForm();
       } else {
         enqueueSnackbar('Algo deu errado, tente novamente!', { variant: 'error' });
-        console.log(response);
       }
     } else {
       // adicionar ambos
@@ -122,7 +111,8 @@ const AdicionarPaciente = function b() {
               last_name: '',
               medical_record_number: inputs.prontuario,
               implant_date: inputs.dataImplante,
-              // faltou data nascimento e sexo do paciente
+              birthdate: inputs.dataNascimento,
+              gender: inputs.sexo,
             },
           ],
         },
@@ -130,6 +120,7 @@ const AdicionarPaciente = function b() {
       const response = await addPacientAndResponsableAPI({ token: coolClearToken, obj: objectApi });
       if (response.status === 200) {
         enqueueSnackbar('Paciente e Responsável adicionados com sucesso!', { variant: 'success' });
+        resetForm();
       } else {
         enqueueSnackbar('Algo deu errado, tente novamente!', { variant: 'error' });
       }
@@ -245,10 +236,10 @@ const AdicionarPaciente = function b() {
                         value={inputs.sexo}
                         required
                       >
-                        <option>
+                        <option value="M">
                           Masculino
                         </option>
-                        <option>
+                        <option value="F">
                           Feminino
                         </option>
                       </Input>
@@ -295,16 +286,6 @@ const AdicionarPaciente = function b() {
                                   label="Responsável"
                                   idNotInt
                                 />
-                                {/* <Input
-                                  id="vincularResponsavel"
-                                  name="vincularResponsavel"
-                                  type="text"
-                                  placeholder="Buscar responsável"
-                                  onChange={(e) => setResponsavel((currState) => ({
-                                    ...currState, nome: e.target.value,
-                                  }))}
-                                  value={responsavel.nome}
-                                /> */}
                               </Col>
                             </FormGroup>
                           </Col>

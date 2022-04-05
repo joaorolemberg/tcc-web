@@ -28,7 +28,7 @@ const Paciente = function b() {
       setLoading(true);
       const response = await fetchPatients({ token: coolClearToken });
       if (response.status === 200) {
-        setPacients(response.data.results);
+        setPacients(response.data);
       }
       setLoading(false);
     }

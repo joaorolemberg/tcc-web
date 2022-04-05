@@ -65,15 +65,15 @@ export async function fetchPatients(params) {
       },
     )
     .then((resp) => {
-      if (resp.data.results.lenght !== 0) {
-        resp.data.results = resp.data.results.map((item) => ({
+      if (resp.data.lenght !== 0) {
+        resp.data = resp.data.map((item) => ({
           id: item.id,
-          responsavel: { nome: 'Teste', id: item.responsable_id },
+          responsavel: { nome: 'Teste', id: item.responsable.id },
           nome: `${item.first_name} ${item.last_name}`,
           prontuario: item.medical_record_number,
-          dataNascimento: '1999-01-08T00:00',
-          dataImplante: '1999-01-08T00:00',
-          sexo: 'M',
+          dataNascimento: item.birthdate,
+          dataImplante: item.implant_date,
+          sexo: item.gender,
         }));
       }
       return resp;
