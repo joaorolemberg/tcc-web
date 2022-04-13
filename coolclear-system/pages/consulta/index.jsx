@@ -1,28 +1,72 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Col, Row,
+  Col, Row, Spinner,
 } from 'reactstrap';
 import { useSnackbar } from 'notistack';
 import MainCard from '../../components/Card/MainCard';
 import Main from '../../components/layout/Main';
 import ComponentRowList from '../../components/List/ComponentRowList';
-import ListItemResponsavel from '../../components/List/ListItemResponsavel';
 import { mocks } from '../../mocks';
 import AddConsultModal from '../../components/Modal/AddConsultModal';
 import ListItemConsulta from '../../components/List/ListItemConsulta';
+import useReRender from '../../hooks/useReRender';
+import useAuth from '../../hooks/useAuth';
+import { fetchMedicalConsultations } from '../../service/API/medical-consultations';
 
 const Consulta = function b() {
+  const { coolClearToken } = useAuth();
+
   const [modalState, setModalState] = useState(false);
+  const {
+    forceReRender,
+    triggerReRender,
+    reRender,
+    setReRender,
+  } = useReRender();
+  const [firstRender, setFirstRender] = useState(true);
+
+  const [loading, setLoading] = useState(true);
+  const [loadingAdd, setLoadingAdd] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [inputs, setInputs] = useState({ nome: '', email: '' });
+  const [consults, setConsults] = useState([]);
+
   const { enqueueSnackbar } = useSnackbar();
 
-  const confirmAction = () => {
-    enqueueSnackbar('Consulta marcada com sucesso', { variant: 'success' });
-  };
-  const declineAction = () => {
-    setModalState(false);
-  };
+
+  useEffect(async () => {
+    if (coolClearToken) {
+      if (firstRender) {
+        setLoading(true);
+
+        setFirstRender(false);
+        const response = await fetchMedicalConsultations({ token: coolClearToken });
+        if (response.status === 200) {
+          setConsults(response.data);
+          console.log(response.data);
+        }
+        setLoading(false);
+      } else if (reRender) {
+        setLoading(true);
+        setFirstRender(false);
+        setReRender(false);
+        const response = await fetchMedicalConsultations({ token: coolClearToken });
+        if (response.status === 200) {
+          setConsults(response.data);
+        }
+        setLoading(false);
+      }
+    }
+  }, [coolClearToken, triggerReRender]);
+  if (loading) {
+    return (
+      <div style={{ marginTop: '50px' }}>
+        <Row className="justify-content-center">
+          <Spinner size="lg" />
+        </Row>
+      </div>
+    );
+  }
 
   return (
     <div style={{ marginTop: '50px' }}>
@@ -30,8 +74,8 @@ const Consulta = function b() {
         <Col xl={10} lg={11} md={11}>
           <MainCard
             search={{
-              types: [{id: 1, param: 'name', label: 'Nome' },
-                { id:2, param: 'email', label: 'Email' }],
+              types: [{ id: 1, param: 'name', label: 'Nome' },
+                { id: 2, param: 'email', label: 'Email' }],
             }}
             add={() => setModalState(true)}
             pagination
@@ -41,15 +85,13 @@ const Consulta = function b() {
             title="Consulta"
           >
             <ComponentRowList
-              list={mocks.consultaList}
+              list={consults}
               Component={ListItemConsulta}
             />
           </MainCard>
         </Col>
       </Row>
       <AddConsultModal
-        confirmAction={{ action: confirmAction, label: 'Adicionar' }}
-        declineAction={{ action: declineAction, label: 'Cancelar' }}
         modalState={modalState}
         setModalState={setModalState}
       />

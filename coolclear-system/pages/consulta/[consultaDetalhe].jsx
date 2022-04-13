@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import {
-  Row, Col, Card, Input, ListGroup, ListGroupItem, Button,
+  Row, Col, Card, Input, ListGroup, ListGroupItem, Button, Spinner,
 } from 'reactstrap';
 import CardConsultBase from '../../components/Card/ConsultPage/CardConsultBase';
 import CardLastsConsults from '../../components/Card/ConsultPage/CardLastsConsults';
@@ -8,6 +9,8 @@ import CardLastSends from '../../components/Card/ConsultPage/CardLastSends';
 import CardPacient from '../../components/Card/ConsultPage/CardPacient';
 import CardSelectedActivities from '../../components/Card/ConsultPage/CardSelectedActivities';
 import Main from '../../components/layout/Main';
+import useAuth from '../../hooks/useAuth';
+import { fetchMedicalConsultation } from '../../service/API/medical-consultations';
 
 function GameItem({ game, handleChange }) {
   return (
@@ -49,6 +52,24 @@ function GameItem({ game, handleChange }) {
 }
 
 function index() {
+  const { coolClearToken } = useAuth();
+  const { query } = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [consultData, setConsultData] = useState({});
+  useEffect(async () => {
+    if (coolClearToken && query.consultaDetalhe) {
+      console.log(query.consultaDetalhe);
+
+      const response = await fetchMedicalConsultation({
+        token: coolClearToken,
+        id: query.consultaDetalhe,
+      });
+      if (response.status === 200) {
+        setConsultData(response.data);
+        setLoading(false);
+      }
+    }
+  }, [coolClearToken, query]);
   const [games, setGames] = useState([
     {
       id: 1, nome: 'Ligue o som', maxLevel: '1', selected: false,
@@ -70,12 +91,21 @@ function index() {
     items[items.indexOf(game)] = item;
     setGames(items);
   }
+  if (loading) {
+    return (
+      <div style={{ marginTop: '50px' }}>
+        <Row className="justify-content-center">
+          <Spinner size="lg" />
+        </Row>
+      </div>
+    );
+  }
   return (
     <div style={{ marginTop: '50px' }}>
       <Card body>
         <Row>
           <Col>
-            <CardPacient />
+            <CardPacient pacientData={consultData.paciente} />
           </Col>
           <Col>
             <CardLastsConsults />

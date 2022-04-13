@@ -24,6 +24,22 @@ export async function loginAPI(params) {
     .catch((error) => error.response);
   return data;
 }
+export async function meRoute(params) {
+  let data = {};
+  const baseFetchUrl = '/me';
+  data = await instance
+    .get(
+      baseFetchUrl,
+      {
+        headers: {
+          Authorization: `Bearer ${params.token}`,
+        },
+      },
+    )
+    .then((response) => response)
+    .catch((error) => error.response);
+  return data;
+}
 
 export async function fetchCallCost2(params) {
   let data = {};

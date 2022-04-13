@@ -1,9 +1,11 @@
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
+import { format, parseISO } from 'date-fns';
 import {
   Card, Row, Col, Button,
 } from 'reactstrap';
 import EditPacientModal from '../../Modal/EditPacientModal';
+import { idade } from '../../../service/functionsAndTypes';
 
 function CardPacient({ pacientData, editButton }) {
   const [modalState, setModalState] = useState(false);
@@ -29,14 +31,14 @@ function CardPacient({ pacientData, editButton }) {
               <Row>
                 <Col xl={11} xs={10} className="text-center">
                   <div style={{ fontSize: '1.4em' }}>
-                    João Pedro Souza Rolemberg
+                    {pacientData.nome}
                   </div>
                 </Col>
                 <Col xl={1} xs={2} className="text-center">
                   <Button
                     size="sm"
                     color="success"
-                    onClick={()=>{setModalState(true)}}
+                    onClick={() => { setModalState(true); }}
                   >
                     <span>
                       <i className="fa fa-pencil-alt text-white" />
@@ -47,12 +49,13 @@ function CardPacient({ pacientData, editButton }) {
                   <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     <i className="fas fa-user-shield" />
                     {' '}
-                    João Pedro Souza Rolemberg
+                    {pacientData.responsavel.nome}
+
                   </div>
                 </Col>
                 <Col xl={4} lg={8} md={8} xs={8}>
                   <i className="fas fa-clipboard-list" />
-                  13456789
+                  {pacientData.prontuario}
                 </Col>
                 <Col xl={2} lg={4} md={4} xs={4}>
                   <i className="fas fa-mars" />
@@ -60,10 +63,12 @@ function CardPacient({ pacientData, editButton }) {
                 </Col>
 
                 <Col xl={6} lg={8} md={8}>
-                  Nascimento: 08/01/1999
+                  Nascimento: 
+                  {format(parseISO(pacientData.dataNascimento), "dd'/'MM'/'yyyy ")}
                 </Col>
                 <Col xl={4} lg={4} md={4}>
-                  Idade: 23
+                  Idade:
+                  {idade(pacientData.dataNascimento)}
                 </Col>
 
               </Row>
@@ -91,37 +96,35 @@ function CardPacient({ pacientData, editButton }) {
           <Row>
             <Col xl={12} xs={12} className="text-center">
               <div style={{ fontSize: '1.4em' }}>
-                João Pedro Souza Rolemberg
+                {pacientData.nome}
               </div>
             </Col>
             <Col xl={8} lg={12} md={12}>
               <div style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                 <i className="fas fa-user-shield" />
                 {' '}
-                João Pedro Souza Rolemberg
+                {pacientData.responsavel.nome}
               </div>
             </Col>
             <Col xl={4} lg={8} md={8} xs={8}>
               <i className="fas fa-clipboard-list" />
-              13456789
+              {pacientData.prontuario}
             </Col>
             <Col xl={2} lg={4} md={4} xs={4}>
-              <i className="fas fa-mars" />
-              <i className="fas fa-venus" />
+              {pacientData.sexo === 'M' ? <i className="fas fa-mars" /> : <i className="fas fa-venus" />}
             </Col>
 
             <Col xl={6} lg={8} md={8}>
-              Nascimento: 08/01/1999
+              Nascimento:
+              {format(parseISO(pacientData.dataNascimento), "dd'/'MM'/'yyyy  HH':'mm ")}
             </Col>
             <Col xl={4} lg={4} md={4}>
-              Idade: 23
+              Idade:
+              {idade(pacientData.dataNascimento)}
             </Col>
-
           </Row>
-
         </Col>
       </Row>
-
     </Card>
   );
 }

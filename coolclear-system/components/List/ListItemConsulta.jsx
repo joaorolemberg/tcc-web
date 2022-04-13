@@ -2,7 +2,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/prop-types */
 import { format, parseISO } from 'date-fns';
-import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import {
   Col, Row, Badge,
@@ -12,8 +11,6 @@ import CheckConsultaModal from '../Modal/CheckConsultaModal';
 
 const ListItemConsulta = function a({ data }) {
   const [modalState, setModalState] = useState(false);
-  const [inputs, setInputs] = useState({ nome: data.nome, email: data.email });
-  const { enqueueSnackbar } = useSnackbar();
   return (
     <div>
       <div onClick={() => setModalState(true)} className="p-1">
@@ -41,19 +38,19 @@ const ListItemConsulta = function a({ data }) {
           </Col>
           <Col xl={2} md={2} xs={6} className="align-self-center">
             <Row className="justify-content-center">
-              {format(parseISO(data.data), "dd'/'MM'/'yyyy")}
+              {format(parseISO(data.data), "dd'/'MM'/'yyyy ")}
             </Row>
             <Row className="justify-content-center">
-              {format(parseISO(data.data), "HH':'MM")}
+              {format(parseISO(data.data), "HH':'mm")}
             </Row>
           </Col>
           <Col xl={2} md={3} xs={6} className="align-self-center">
             <Row className="justify-content-center mb-2">
-              <Badge color="secondary">{tiposConsulta[data.tipo]}</Badge>
+              <Badge color="secondary">{data.tipo}</Badge>
             </Row>
             <Row className="justify-content-center">
-              <Badge color={tiposStatus[data.status].color}>
-                {tiposStatus[data.status].label}
+              <Badge color={tiposStatus[data.status]}>
+                {data.status}
               </Badge>
             </Row>
           </Col>

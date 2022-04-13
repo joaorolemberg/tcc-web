@@ -3,7 +3,7 @@
 import Router from 'next/router';
 import { destroyCookie, parseCookies, setCookie } from 'nookies';
 import React, { createContext, useState } from 'react';
-import { loginAPI } from '../service/API/account';
+import { loginAPI, meRoute } from '../service/API/account';
 
 const initialStateAuthenticated = () => {
   if (typeof window !== 'undefined') {
@@ -19,6 +19,13 @@ const initalStateToken = () => {
   }
   return null;
 };
+const initialStateUser = () => {
+  if (typeof window !== 'undefined') {
+    const localData = parseCookies();
+    return localData.userCoolClear ? JSON.parse(localData.userCoolClear) : {};
+  }
+  return null;
+};
 
 const AuthContext = createContext({});
 
@@ -26,13 +33,20 @@ export const AuthContextProvider = function b({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(initialStateAuthenticated());
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [coolClearToken, setCoolClearToken] = useState(initalStateToken());
+  const [user, setUser] = useState(initialStateUser());
 
-  const saveToken = (token) => {
-    setCookie(null, 'coolClearToken', token, {
-      maxAge: 30 * 24 * 60 * 60,
-      path: '/',
-    });
-    setCoolClearToken(token);
+  const saveToken = (name, token, parse) => {
+    if (parse) {
+      setCookie(null, name, JSON.stringify(token), {
+        maxAge: 30 * 24 * 60 * 60,
+        path: '/',
+      });
+    } else {
+      setCookie(null, name, token, {
+        maxAge: 30 * 24 * 60 * 60,
+        path: '/',
+      });
+    }
   };
 
   const login = async (inputs) => {
@@ -40,10 +54,16 @@ export const AuthContextProvider = function b({ children }) {
     const response = await loginAPI(inputs);
 
     if (response.status === 200) {
-      saveToken(response.data.token);
-      setIsAuthenticating(false);
-
-      return { login: true, text: 'Login realizado com sucesso!' };
+      const { token } = response.data;
+      const response2 = await meRoute({ token });
+      if (response2.status === 200) {
+        saveToken('coolClearToken', response.data.token);
+        setCoolClearToken(response.data.token);
+        setUser(response2.data);
+        saveToken('userCoolClear', response2.data, true);
+        setIsAuthenticating(false);
+        return { login: true, text: 'Login realizado com sucesso!' };
+      }
     }
     setIsAuthenticating(false);
 
@@ -58,7 +78,7 @@ export const AuthContextProvider = function b({ children }) {
   return (
     <AuthContext.Provider
       value={{
-        isAuthenticated, login, logout, isAuthenticating, coolClearToken,
+        isAuthenticated, login, logout, isAuthenticating, coolClearToken, user,
       }}
     >
       {children}

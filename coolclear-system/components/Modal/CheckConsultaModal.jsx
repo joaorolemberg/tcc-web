@@ -48,7 +48,7 @@ const CheckConsultaModal = function b({
                 <>
                   Data:
                   {' '}
-                  {format(parseISO(consultData.data), "dd'/'MM'/'yyyy 'às' HH':'MM")}
+                  {format(parseISO(consultData.data), "dd'/'MM'/'yyyy 'às' HH':'mm")}
                 </>
               )
               : (
@@ -70,10 +70,10 @@ const CheckConsultaModal = function b({
               )}
           </Row>
           <Row className="justify-content-center">
-            {`Status: ${tiposStatus[consultData.status].label}`}
+            {`Status: ${consultData.status}`}
           </Row>
           <Row className="justify-content-center">
-            {`Tipo: ${tiposConsulta[consultData.tipo]}`}
+            {`Tipo: ${consultData.tipo}`}
           </Row>
         </>
       )}
