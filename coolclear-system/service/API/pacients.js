@@ -23,15 +23,35 @@ export async function addPacientAndResponsableAPI(params) {
     )
     .then((response) => response)
     .catch((error) => error.response);
-  return data;
+  if (data.status === 200) {
+    const data2 = await instance
+      .post(
+        'speech-therapists/assign-patient',
+        {
+          speech_therapist_id: params.speech_therapist_id,
+          patient_id: data.data.user.responsable.patients[0].id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${params.token}`,
+          },
+        },
+      )
+      .then((response) => response)
+      .catch((error) => error.response);
+    if (data2.status === 200) {
+      return true;
+    }
+    return false;
+  }
+  return false;
 }
 export async function addPacientAndVinculateResponsableAPI(params) {
   let data = {};
-  let baseFetchUrl = 'responsables';
-  baseFetchUrl = `${baseFetchUrl}/${params.idResponsible}`;
+  const baseFetchUrl = 'patients';
   data = await instance
-    .put(
-      baseFetchUrl,
+    .post(
+      'patients',
       params.obj,
       {
         headers: {
@@ -41,12 +61,55 @@ export async function addPacientAndVinculateResponsableAPI(params) {
     )
     .then((response) => response)
     .catch((error) => error.response);
-  return data;
+  if (data.status === 200) {
+    console.log('adiconou paciente', data);
+    // return true;
+    const data2 = await instance
+      .post(
+        'speech-therapists/assign-patient',
+        {
+          speech_therapist_id: params.speech_therapist_id,
+          patient_id: data.data.id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${params.token}`,
+          },
+        },
+      )
+      .then((response) => response)
+      .catch((error) => error.response);
+    if (data2.status === 200) {
+      console.log('vinculou fono', data2);
+      const data3 = await instance
+        .post(
+          'responsables/assign-patient',
+          {
+            responsable_id: params.responsable_id,
+            patient_id: data.data.id,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${params.token}`,
+            },
+          },
+        )
+        .then((response) => response)
+        .catch((error) => error.response);
+      if (data3.status === 200) {
+        console.log('vinculou responsavel', data3);
+        return true;
+      }
+      return false;
+    }
+    return false;
+  }
+  return false;
 }
 export async function fetchPatients(params) {
   let response = {};
-  const baseFetchUrl = 'patients';
-  //   if (params.dataInicio) { baseFetchUrl = `${baseFetchUrl}&DataInicio=${params.dataInicio}`; }
+  let baseFetchUrl = 'patients';
+  if (params.speech_therapist_id) { baseFetchUrl = `${baseFetchUrl}?speech_therapist_id=${params.speech_therapist_id}`; }
   //   if (params.dataFim) { baseFetchUrl = `${baseFetchUrl}&DataFim=${params.dataFim}`; }
 
   //   if (params.idCondominio) {

@@ -52,7 +52,6 @@ export const AuthContextProvider = function b({ children }) {
   const login = async (inputs) => {
     setIsAuthenticating(true);
     const response = await loginAPI(inputs);
-
     if (response.status === 200) {
       const { token } = response.data;
       const response2 = await meRoute({ token });

@@ -32,7 +32,7 @@ const AdicionarPaciente = function b() {
   const [responsables, setResponsables] = useState([]);
   const [selectedResponsable, setSelectedResponsable] = useState({});
 
-  const { coolClearToken } = useAuth();
+  const { coolClearToken, user } = useAuth();
   useEffect(async () => {
     if (coolClearToken) {
       const response = await fetchResponsables({ token: coolClearToken });
@@ -69,36 +69,27 @@ const AdicionarPaciente = function b() {
     let objectApi = {};
     setLoadingAdd(true);
     if (activeTab === 1) { // responsavel existente
-      const resp = responsables.find((item) => {
-        if (item.key === selectedResponsable.key) {
-          return true;
-        }
-        return false;
-      });
-      resp.data.push({
+      objectApi = {
         first_name: inputs.nome,
         last_name: '',
         medical_record_number: inputs.prontuario,
         implant_date: inputs.dataImplante,
         birthdate: inputs.dataNascimento,
         gender: inputs.sexo,
-      });
-      objectApi = {
-        patients: resp.data,
       };
       const response = await addPacientAndVinculateResponsableAPI({
         token: coolClearToken,
         obj: objectApi,
-        idResponsible: selectedResponsable.key,
+        responsable_id: selectedResponsable.key,
+        speech_therapist_id: user.speech_therapist.id,
       });
-      if (response.status === 200) {
-        enqueueSnackbar('Paciente e Responsável adicionados com sucesso!', { variant: 'success' });
+      if (response) {
+        enqueueSnackbar('Paciente adicionado com sucesso!', { variant: 'success' });
         resetForm();
       } else {
         enqueueSnackbar('Algo deu errado, tente novamente!', { variant: 'error' });
       }
     } else {
-      // adicionar ambos
       objectApi = {
         first_name: responsavel.nome,
         last_name: '',
@@ -117,8 +108,12 @@ const AdicionarPaciente = function b() {
           ],
         },
       };
-      const response = await addPacientAndResponsableAPI({ token: coolClearToken, obj: objectApi });
-      if (response.status === 200) {
+      const response = await addPacientAndResponsableAPI({
+        token: coolClearToken,
+        obj: objectApi,
+        speech_therapist_id: user.speech_therapist.id,
+      });
+      if (response) {
         enqueueSnackbar('Paciente e Responsável adicionados com sucesso!', { variant: 'success' });
         resetForm();
       } else {
