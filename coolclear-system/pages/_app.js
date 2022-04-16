@@ -10,6 +10,7 @@ import '../styles/globals.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import Middleware from '../components/HOC/Middleware';
 import { ReRenderProvider } from '../context/ReRenderContext';
+import { ConsultProvider } from '../context/ConsultContext';
 
 function MyApp({ Component, pageProps }) {
   const Layout = Component.layout || (({ children }) => <div>{children}</div>);
@@ -28,13 +29,14 @@ function MyApp({ Component, pageProps }) {
       <SnackbarProvider>
         <AuthContextProvider>
           <ReRenderProvider>
-            <Middleware>
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </Middleware>
+            <ConsultProvider>
+              <Middleware>
+                <Layout>
+                  <Component {...pageProps} />
+                </Layout>
+              </Middleware>
+            </ConsultProvider>
           </ReRenderProvider>
-
         </AuthContextProvider>
       </SnackbarProvider>
 

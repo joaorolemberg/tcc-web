@@ -1,10 +1,39 @@
-import React from 'react';
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React, { useEffect, useState } from 'react';
 import { Card, Row, Col } from 'reactstrap';
+import { format, parseISO } from 'date-fns';
+import useAuth from '../../../hooks/useAuth';
+import useConsult from '../../../hooks/useConsult';
+import { fetchMedicalConsultations } from '../../../service/API/medical-consultations';
+import BaseModal from '../../Modal/BaseModal';
 
 function CardLastsConsults() {
+  const { coolClearToken } = useAuth();
+  const { consult } = useConsult();
+  const [lastsConsults, setLastsConsults] = useState([]);
+  const [modalState, setModalState] = useState(false);
+  const [observations, setObservations] = useState({ text: '', date: '' });
+  useEffect(async () => {
+    if (coolClearToken && consult) {
+      const response = await fetchMedicalConsultations({
+        token: coolClearToken,
+        patient_id: consult.paciente.idPacient,
+      });
+      if (response.status === 200) {
+        const lasts = response.data.filter((item) => {
+          if (item.id !== consult.id) {
+            return true;
+          }
+          return false;
+        });
+        console.log(lasts);
+        setLastsConsults(lasts);
+      }
+    }
+  }, [coolClearToken, consult]);
   return (
     <Card body style={{ backgroundColor: '#CBDFCC', height: '100%' }}>
-      <Row style={{height:'100%'}}>
+      <Row style={{ height: '100%' }}>
 
         <Row className="text-center">
           <div style={{ fontSize: '1.4em' }}>
@@ -12,24 +41,31 @@ function CardLastsConsults() {
             {' '}
           </div>
         </Row>
-        <Row className="text-center">
-          <Col>
-            10/01/2020  Observações
-          </Col>
-        </Row>
-        <Row className="text-center">
-          <Col>
-            10/01/2020  Observações
-          </Col>
-        </Row>
-        <Row className="text-center">
-          <Col>
-            10/01/2020  Observações
-          </Col>
-        </Row>
-        {' '}
-
+        {lastsConsults.length !== 0
+          ? lastsConsults.map((item) => (
+            <Row className="text-center">
+              <Col>
+                {format(parseISO(item.data), "dd'/'MM'/'yyyy ")}
+              </Col>
+              <Col>
+                <a href="#" onClick={() => { setObservations({ date: format(parseISO(item.data), "dd'/'MM'/'yyyy "), text: item.observation }); setModalState(true); }} on>Observacoes</a>
+              </Col>
+            </Row>
+          ))
+          : <div> Não há consultas anteriores</div>}
       </Row>
+      <BaseModal
+        modalState={modalState}
+        setModalState={setModalState}
+        title={`Observacoes ${observations.date}`}
+        size="mb"
+        // eslint-disable-next-line react/no-unstable-nested-components
+        Body={() => (
+          <div>
+            {observations.text || 'Sem observacoes na consulta'}
+          </div>
+        )}
+      />
 
     </Card>
 

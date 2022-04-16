@@ -10,6 +10,7 @@ import CardPacient from '../../components/Card/ConsultPage/CardPacient';
 import CardSelectedActivities from '../../components/Card/ConsultPage/CardSelectedActivities';
 import Main from '../../components/layout/Main';
 import useAuth from '../../hooks/useAuth';
+import useConsult from '../../hooks/useConsult';
 import { fetchMedicalConsultation } from '../../service/API/medical-consultations';
 
 function GameItem({ game, handleChange }) {
@@ -55,17 +56,16 @@ function index() {
   const { coolClearToken } = useAuth();
   const { query } = useRouter();
   const [loading, setLoading] = useState(true);
-  const [consultData, setConsultData] = useState({});
+  const { consult, setConsult } = useConsult();
   useEffect(async () => {
     if (coolClearToken && query.consultaDetalhe) {
-      console.log(query.consultaDetalhe);
-
       const response = await fetchMedicalConsultation({
         token: coolClearToken,
         id: query.consultaDetalhe,
       });
       if (response.status === 200) {
-        setConsultData(response.data);
+        setConsult(response.data);
+        // setConsultData(response.data);
         setLoading(false);
       }
     }
@@ -105,7 +105,7 @@ function index() {
       <Card body>
         <Row>
           <Col>
-            <CardPacient pacientData={consultData.paciente} />
+            <CardPacient pacientData={consult.paciente} />
           </Col>
           <Col>
             <CardLastsConsults />

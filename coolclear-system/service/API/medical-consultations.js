@@ -12,15 +12,11 @@ export async function addConsult(params) {
   const baseFetchUrl = 'medical-consultations';
 
   data = await instance
-    .post(
-      baseFetchUrl,
-      params.object,
-      {
-        headers: {
-          Authorization: `Bearer ${params.token}`,
-        },
+    .post(baseFetchUrl, params.object, {
+      headers: {
+        Authorization: `Bearer ${params.token}`,
       },
-    )
+    })
     .then((response) => response)
     .catch((error) => error.response);
   return data;
@@ -28,16 +24,15 @@ export async function addConsult(params) {
 
 export async function fetchMedicalConsultations(params) {
   let response = {};
-  const baseFetchUrl = 'medical-consultations';
+  let baseFetchUrl = 'medical-consultations';
+  if (params.patient_id) { baseFetchUrl = `${baseFetchUrl}?patient_id=${params.patient_id}`; }
+
   response = await instance
-    .get(
-      baseFetchUrl,
-      {
-        headers: {
-          Authorization: `Bearer ${params.token}`,
-        },
+    .get(baseFetchUrl, {
+      headers: {
+        Authorization: `Bearer ${params.token}`,
       },
-    )
+    })
     .then((resp) => {
       if (resp.data.lenght !== 0) {
         resp.data = resp.data.map((item) => ({
@@ -47,6 +42,7 @@ export async function fetchMedicalConsultations(params) {
             sexo: item.speech_therapist_patient.patient.gender,
             idPacient: item.speech_therapist_patient.patient.id,
           },
+          observation: item.observation,
           speech_therapist_patient_id: item.speech_therapist_patient_id,
           responsavel: { nome: 'Pedro' },
           tipo: item.type,
@@ -64,55 +60,58 @@ export async function fetchMedicalConsultation(params) {
   let response = {};
   const baseFetchUrl = `medical-consultations/${params.id}`;
   response = await instance
-    .get(
-      baseFetchUrl,
-      {
-        headers: {
-          Authorization: `Bearer ${params.token}`,
-        },
+    .get(baseFetchUrl, {
+      headers: {
+        Authorization: `Bearer ${params.token}`,
       },
-    )
-    .then((resp) =>
-    // resp.data = {
-    //   ...resp.data,
-    //   id: resp.data.id,
-    //   paciente: {
-    //     nome: `${resp.data.speech_therapist_patient.patients.first_name} ${resp.data.speech_therapist_patient.patients.last_name}`,
-    //     sexo: resp.data.speech_therapist_patient.patients.gender,
-    //     idPacient: resp.data.speech_therapist_patient.patients.id,
-    //     prontuario: resp.data.speech_therapist_patient.patients.medical_record_number,
-    //     // eslint-disable-next-line max-len
-    //     dataImplante: resp.data.speech_therapist_patient.patients.implant_date.substring(0, resp.data.speech_therapist_patient.patients.implant_date.length - 8),
-    //     // eslint-disable-next-line max-len
-    //     dataNascimento: resp.data.speech_therapist_patient.patients.birthdate.substring(0, resp.data.speech_therapist_patient.patients.birthdate.length - 8),
-    //     responsavel: { nome: 'Pedro' },
-    //   },
-    //   speech_therapist_patient_id: resp.data.speech_therapist_patient_id,
-    //   responsavel: { nome: 'Pedro' },
-    //   tipo: resp.data.type,
-    //   status: resp.data.status,
-    //   data: resp.data.date.substring(0, resp.data.date.length - 8),
-    // };
+    })
+    .then((resp) => {
+      resp.data = {
+        ...resp.data,
+        id: resp.data.id,
+        paciente: {
+          nome: `${resp.data.speech_therapist_patient.patient.first_name} ${resp.data.speech_therapist_patient.patient.last_name}`,
+          sexo: resp.data.speech_therapist_patient.patient.gender,
+          idPacient: resp.data.speech_therapist_patient.patient.id,
+          prontuario:
+            resp.data.speech_therapist_patient.patient.medical_record_number,
+          // eslint-disable-next-line max-len
+          dataImplante:
+            resp.data.speech_therapist_patient.patient.implant_date.substring(
+              0,
+              resp.data.speech_therapist_patient.patient.implant_date.length
+                - 8,
+            ),
+          // eslint-disable-next-line max-len
+          dataNascimento:
+            resp.data.speech_therapist_patient.patient.birthdate.substring(
+              0,
+              resp.data.speech_therapist_patient.patient.birthdate.length - 8,
+            ),
+          responsavel: { nome: `${resp.data.speech_therapist_patient.patient.responsable.user.first_name} ${resp.data.speech_therapist_patient.patient.responsable.user.last_name}` },
+        },
+        speech_therapist_patient_id: resp.data.speech_therapist_patient_id,
+        responsavel: { nome: 'Pedro' },
+        tipo: resp.data.type,
+        status: resp.data.status,
+        data: resp.data.date.substring(0, resp.data.date.length - 8),
+      };
 
-      resp)
+      return resp;
+    })
     .catch((error) => error.response);
-  console.log(response);
   return response;
 }
 export async function editMedicalConsultation(params) {
   let response = {};
   const baseFetchUrl = `medical-consultations/${params.id}`;
   response = await instance
-    .put(
-      baseFetchUrl,
-      params.objectApi,
-      {
-        headers: {
-          Authorization: `Bearer ${params.token}`,
-        },
+    .put(baseFetchUrl, params.objectApi, {
+      headers: {
+        Authorization: `Bearer ${params.token}`,
       },
-    )
-    .then((resp) => (resp))
+    })
+    .then((resp) => resp)
     .catch((error) => error.response);
   return response;
 }
