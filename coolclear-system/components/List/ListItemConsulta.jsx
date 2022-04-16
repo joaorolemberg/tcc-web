@@ -6,14 +6,23 @@ import React, { useState } from 'react';
 import {
   Col, Row, Badge,
 } from 'reactstrap';
-import { tiposConsulta, tiposStatus } from '../../service/functionsAndTypes';
+import { tiposStatus } from '../../service/functionsAndTypes';
 import CheckConsultaModal from '../Modal/CheckConsultaModal';
 
 const ListItemConsulta = function a({ data }) {
   const [modalState, setModalState] = useState(false);
   return (
     <div>
-      <div onClick={() => setModalState(true)} className="p-1">
+      <div
+        onClick={() => {
+          if (data.status === 'Cancelada' || data.status === 'Concluida') {
+            console.log('nao pode entrar');
+          } else {
+            setModalState(true);
+          }
+        }}
+        className="p-1"
+      >
         <Row>
           <Col xl={1} md={1} xs={2} className="align-self-center text-center">
             <span>
@@ -40,9 +49,9 @@ const ListItemConsulta = function a({ data }) {
             <Row className="justify-content-center">
               {format(parseISO(data.data), "dd'/'MM'/'yyyy ")}
             </Row>
-            <Row className="justify-content-center">
+            {/* <Row className="justify-content-center">
               {format(parseISO(data.data), "HH':'mm")}
-            </Row>
+            </Row> */}
           </Col>
           <Col xl={2} md={3} xs={6} className="align-self-center">
             <Row className="justify-content-center mb-2">

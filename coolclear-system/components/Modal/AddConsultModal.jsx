@@ -7,7 +7,7 @@ import { useSnackbar } from 'notistack';
 import ModalWith2Buttons from './ModalWith2Buttons';
 import DatalistInput from '../List/DatalistInput';
 import useAuth from '../../hooks/useAuth';
-import { fetchSpeechTherapists } from '../../service/API/speech-therapists';
+import { fetchSpeechTherapist } from '../../service/API/speech-therapists';
 import { addConsult } from '../../service/API/medical-consultations';
 import useReRender from '../../hooks/useReRender';
 
@@ -27,12 +27,14 @@ function AddConsultModal({
   const [selectedPatient, setSelectedPatient] = useState({});
   useEffect(async () => {
     if (coolClearToken) {
-      const response = await fetchSpeechTherapists({ token: coolClearToken });
+      const response = await fetchSpeechTherapist({
+        token: coolClearToken,
+        speech_therapist_id: user.speech_therapist.id,
+      });
       if (response.status === 200) {
-        const filtered = response.data.filter((speech) => (speech.user.id === user.id));
-        const speechPatients = filtered[0].speech_patients.map((item) => ({
+        const speechPatients = response.data.speech_patients.map((item) => ({
           key: item.id,
-          label: `${item.patients.first_name} ${item.patients.last_name}`,
+          label: `${item.patient.first_name} ${item.patient.last_name}`,
         }));
         // console.log('filtered',speechPatients);
         setPatients(speechPatients);
@@ -49,7 +51,6 @@ function AddConsultModal({
         status: 'Agendada',
         speech_therapist_patient_id: selectedPatient.key,
       };
-      console.log(objectApi);
       const response = await addConsult({ token: coolClearToken, object: objectApi });
       if (response.status === 200) {
         enqueueSnackbar('Consulta adicionada com sucesso', { variant: 'success' });

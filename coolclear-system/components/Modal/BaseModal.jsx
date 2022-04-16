@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import {
-  Modal, ModalBody, ModalFooter, ModalHeader, Form,
+  Modal, ModalBody, ModalHeader, Form,
 } from 'reactstrap';
+import useReRender from '../../hooks/useReRender';
 
 const BaseModal = function b({
   modalState,
@@ -13,47 +14,53 @@ const BaseModal = function b({
   Footer,
   formAction,
 }) {
+  const { forceReRender } = useReRender();
+
   return (
     <Modal
       isOpen={modalState}
-      toggle={() => setModalState(!modalState)}
+      toggle={() => {
+        forceReRender();
+        setModalState(!modalState);
+      }}
       size={size}
     >
-      <ModalHeader toggle={() => setModalState(!modalState)}>{title}</ModalHeader>
-      {formAction
-        ? (
-          <Form onSubmit={(e) => { e.preventDefault(); formAction(); }}>
-            {Body
-              ? (
-                <ModalBody>
-                  <Body />
-                </ModalBody>
-              )
-              : <div />}
-            {Footer
-              ? (
-                <Footer />
-              )
-              : <div />}
-          </Form>
-        )
-        : (
-          <div>
-            {Body
-              ? (
-                <ModalBody>
-                  <Body />
-                </ModalBody>
-              )
-              : <div />}
-            {Footer
-              ? (
-                <Footer />
-              )
-              : <div />}
-          </div>
-        )}
-
+      <ModalHeader
+        toggle={() => {
+          forceReRender();
+          setModalState(!modalState);
+        }}
+      >
+        {title}
+      </ModalHeader>
+      {formAction ? (
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
+            formAction();
+          }}
+        >
+          {Body ? (
+            <ModalBody>
+              <Body />
+            </ModalBody>
+          ) : (
+            <div />
+          )}
+          {Footer ? <Footer /> : <div />}
+        </Form>
+      ) : (
+        <div>
+          {Body ? (
+            <ModalBody>
+              <Body />
+            </ModalBody>
+          ) : (
+            <div />
+          )}
+          {Footer ? <Footer /> : <div />}
+        </div>
+      )}
     </Modal>
   );
 };
