@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect } from 'react';
 import {
   Card, Row, Col, ListGroup, ListGroupItem,
 } from 'reactstrap';
@@ -10,7 +10,7 @@ function CardSelectedActivities() {
   const { consult } = useConsult();
   useEffect(async () => {
     if (coolClearToken && consult) {
-      
+
       // const response = await fetchMedicalConsultations({
       //   token: coolClearToken,
       //   patient_id: consult.paciente.idPacient,

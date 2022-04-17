@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Input, Label } from 'reactstrap';
 
 const DatalistInput = function a({
-  placeholder, id, items, setSelectedState, disabled, label, size, idNotInt, data,
+  placeholder, id, items, setSelectedState, disabled, label, size, idNotInt,
 }) {
   const [input, setInput] = useState('');
 
