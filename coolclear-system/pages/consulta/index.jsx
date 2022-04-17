@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import {
   Col, Row, Spinner,
@@ -6,7 +7,6 @@ import { useSnackbar } from 'notistack';
 import MainCard from '../../components/Card/MainCard';
 import Main from '../../components/layout/Main';
 import ComponentRowList from '../../components/List/ComponentRowList';
-import { mocks } from '../../mocks';
 import AddConsultModal from '../../components/Modal/AddConsultModal';
 import ListItemConsulta from '../../components/List/ListItemConsulta';
 import useReRender from '../../hooks/useReRender';
@@ -32,7 +32,6 @@ const Consulta = function b() {
   const [consults, setConsults] = useState([]);
 
   const { enqueueSnackbar } = useSnackbar();
-
 
   useEffect(async () => {
     if (coolClearToken) {

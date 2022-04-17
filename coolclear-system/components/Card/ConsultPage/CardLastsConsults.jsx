@@ -26,7 +26,6 @@ function CardLastsConsults() {
           }
           return false;
         });
-        console.log(lasts);
         setLastsConsults(lasts);
       }
     }

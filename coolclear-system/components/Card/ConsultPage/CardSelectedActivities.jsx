@@ -1,9 +1,31 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Card, Row, Col, ListGroup, ListGroupItem,
 } from 'reactstrap';
+import useAuth from '../../../hooks/useAuth';
+import useConsult from '../../../hooks/useConsult';
 
 function CardSelectedActivities() {
+  const { coolClearToken } = useAuth();
+  const { consult } = useConsult();
+  useEffect(async () => {
+    if (coolClearToken && consult) {
+      
+      // const response = await fetchMedicalConsultations({
+      //   token: coolClearToken,
+      //   patient_id: consult.paciente.idPacient,
+      // });
+      // if (response.status === 200) {
+      //   const lasts = response.data.filter((item) => {
+      //     if (item.id !== consult.id) {
+      //       return true;
+      //     }
+      //     return false;
+      //   });
+      //   setLastsConsults(lasts);
+      // }
+    }
+  }, [coolClearToken, consult]);
   return (
     <Card body style={{ backgroundColor: '#CBDFCC', height: '100%' }}>
       <Row style={{ height: '100%' }}>

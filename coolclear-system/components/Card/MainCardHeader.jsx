@@ -104,7 +104,6 @@ const MainCardHeader = function c({
       </Row>
     );
   }
-  
 
   return (
     <Row>

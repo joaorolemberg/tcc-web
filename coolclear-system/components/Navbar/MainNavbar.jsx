@@ -16,7 +16,7 @@ export default function MainNavbar({ setSidebarOpen }) {
       />
       <NavbarBrand
         href="/"
-        style={{ color: 'white', fontSize: '25px', paddingRight:'60px' }}
+        style={{ color: 'white', fontSize: '25px', paddingRight: '60px' }}
         className="mx-auto"
       >
         CoolClear

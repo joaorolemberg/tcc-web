@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -11,6 +12,7 @@ import CardSelectedActivities from '../../components/Card/ConsultPage/CardSelect
 import Main from '../../components/layout/Main';
 import useAuth from '../../hooks/useAuth';
 import useConsult from '../../hooks/useConsult';
+import { fetchActivities } from '../../service/API/activities';
 import { fetchMedicalConsultation } from '../../service/API/medical-consultations';
 
 function GameItem({ game, handleChange }) {
@@ -32,8 +34,13 @@ function GameItem({ game, handleChange }) {
       <Col xs={1}>
         <i className="fa fa-flag" />
       </Col>
-      <Col xs={9} className="text-center">
+      <Col xs={6} className="text-center">
         {game.nome}
+      </Col>
+      <Col xs={3}>
+        <Row>
+          <input type="number" />
+        </Row>
       </Col>
       {!game.selected
         ? (
@@ -57,30 +64,30 @@ function index() {
   const { query } = useRouter();
   const [loading, setLoading] = useState(true);
   const { consult, setConsult } = useConsult();
+  const [games, setGames] = useState([]);
   useEffect(async () => {
     if (coolClearToken && query.consultaDetalhe) {
       const response = await fetchMedicalConsultation({
         token: coolClearToken,
         id: query.consultaDetalhe,
       });
-      if (response.status === 200) {
+      const response2 = await fetchActivities({ token: coolClearToken });
+      if (response.status === 200 && response2.status === 200) {
+        // console.log(response2.data);
+        const gamesApi = response2.data.map((item) => ({
+          id: item.id,
+          nome: item.name,
+          maxLevel: item.number_of_difficulty_levels,
+          selectedDifficulty: 1,
+          selected: false,
+        }));
+        setGames(gamesApi);
         setConsult(response.data);
         // setConsultData(response.data);
         setLoading(false);
       }
     }
   }, [coolClearToken, query]);
-  const [games, setGames] = useState([
-    {
-      id: 1, nome: 'Ligue o som', maxLevel: '1', selected: false,
-    },
-    {
-      id: 2, nome: 'Som animal', maxLevel: '1', selected: false,
-    },
-    {
-      id: 3, nome: 'Para-Escuta-Para', maxLevel: '1', selected: true,
-    },
-  ]);
 
   function handleChange(game) {
     const items = [...games];

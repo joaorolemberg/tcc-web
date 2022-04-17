@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import { format, parseISO } from 'date-fns';
@@ -63,7 +64,7 @@ function CardPacient({ pacientData, editButton }) {
                 </Col>
 
                 <Col xl={6} lg={8} md={8}>
-                  Nascimento: 
+                  Nascimento:
                   {format(parseISO(pacientData.dataNascimento), "dd'/'MM'/'yyyy ")}
                 </Col>
                 <Col xl={4} lg={4} md={4}>

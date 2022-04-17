@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
-import { Card, Container } from 'reactstrap';
+import { Container } from 'reactstrap';
 import CustomBread from '../Breadcrumb/CustomBread';
 import MainNavbar from '../Navbar/MainNavbar';
 import Sidebar from '../Sidebar/Sidebar';
