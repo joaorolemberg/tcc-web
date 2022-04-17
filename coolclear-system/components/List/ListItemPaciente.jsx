@@ -10,7 +10,7 @@ const ListItemPaciente = function a({ data }) {
     <div>
       <div
         onClick={() => {
-          Router.push('/paciente/1');
+          Router.push(`/paciente/${data.id}`);
         }}
         className="p-1"
       >

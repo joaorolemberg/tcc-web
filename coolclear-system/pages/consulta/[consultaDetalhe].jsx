@@ -1,5 +1,8 @@
+/* eslint-disable react/jsx-no-bind */
+/* eslint-disable no-param-reassign */
 /* eslint-disable react/prop-types */
-import { useRouter } from 'next/router';
+import { Router, useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
 import React, { useEffect, useState } from 'react';
 import {
   Row, Col, Card, Input, ListGroup, ListGroupItem, Button, Spinner,
@@ -12,7 +15,7 @@ import CardSelectedActivities from '../../components/Card/ConsultPage/CardSelect
 import Main from '../../components/layout/Main';
 import useAuth from '../../hooks/useAuth';
 import useConsult from '../../hooks/useConsult';
-import { fetchActivities } from '../../service/API/activities';
+import { assignActivities, fetchActivities } from '../../service/API/activities';
 import { fetchMedicalConsultation } from '../../service/API/medical-consultations';
 
 function GameItem({ game, handleChange }) {
@@ -39,7 +42,7 @@ function GameItem({ game, handleChange }) {
       </Col>
       <Col xs={3}>
         <Row>
-          <input type="number" />
+          <input type="number" max={game.maxLevel} onChange={(e) => { const teste = e.target.value; handleChange(game, teste); }} value={game.selectedDifficulty} min={1} disabled={game.selected} />
         </Row>
       </Col>
       {!game.selected
@@ -61,10 +64,14 @@ function GameItem({ game, handleChange }) {
 
 function index() {
   const { coolClearToken } = useAuth();
-  const { query } = useRouter();
+  const { push, query } = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(true);
+  const [loadingAdd, setLoadingAdd] = useState(false);
   const { consult, setConsult } = useConsult();
   const [games, setGames] = useState([]);
+  const [observations, setOservations] = useState('');
+
   useEffect(async () => {
     if (coolClearToken && query.consultaDetalhe) {
       const response = await fetchMedicalConsultation({
@@ -89,14 +96,53 @@ function index() {
     }
   }, [coolClearToken, query]);
 
-  function handleChange(game) {
-    const items = [...games];
-    const item = {
-      ...items[items.indexOf(game)],
+  function handleChange(game, dificulty) {
+    if (dificulty) {
+      const items = [...games];
+      const item = {
+        ...items[items.indexOf(game)],
+      };
+      item.selectedDifficulty = dificulty;
+      items[items.indexOf(game)] = item;
+      setGames(items);
+    } else {
+      const items = [...games];
+      const item = {
+        ...items[items.indexOf(game)],
+      };
+      item.selected = !item.selected;
+      items[items.indexOf(game)] = item;
+      setGames(items);
+    }
+  }
+
+  async function encerrarConsulta() {
+    const gamesApi = games.filter((item) => {
+      if (item.selected) {
+        return true;
+      }
+      return false;
+    });
+    const objectApi = {
+      observation: observations,
+      status: 'Concluida',
     };
-    item.selected = !item.selected;
-    items[items.indexOf(game)] = item;
-    setGames(items);
+    setLoadingAdd(true);
+    const response = await assignActivities({
+      token: coolClearToken,
+      objectApi,
+      id: consult.id,
+      games: gamesApi,
+    });
+    if (response) {
+      enqueueSnackbar('Consulta encerrada com sucesso, voltando para consultas', { variant: 'success' });
+      setTimeout(() => {
+        push('/consulta');
+      }, 2000);
+    } else {
+      enqueueSnackbar('Não foi possível encerrar a consulta, tente novamente', { variant: 'error' });
+    }
+    setLoadingAdd(false);
   }
   if (loading) {
     return (
@@ -118,14 +164,14 @@ function index() {
             <CardLastsConsults />
           </Col>
         </Row>
-        <Row className="mt-3">
+        {/* <Row className="mt-3">
           <Col>
             <CardSelectedActivities />
           </Col>
           <Col>
             <CardLastSends />
           </Col>
-        </Row>
+        </Row> */}
         <Row className="mt-3 mb-3">
           <Col>
             <CardConsultBase>
@@ -138,6 +184,8 @@ function index() {
               <Row>
                 <Input
                   type="textarea"
+                  value={observations}
+                  onChange={(e) => (setOservations(e.target.value))}
                 />
               </Row>
             </CardConsultBase>
@@ -164,10 +212,10 @@ function index() {
                           {games.map((item) => {
                             if (!item.selected) {
                               return (
-                                <ListGroupItem>
+                                <ListGroupItem key={item.id}>
                                   <GameItem
                                     game={item}
-                                    handleChange={() => { handleChange(item); }}
+                                    handleChange={handleChange}
                                   />
                                 </ListGroupItem>
                               );
@@ -190,10 +238,10 @@ function index() {
                           {games.map((item) => {
                             if (item.selected) {
                               return (
-                                <ListGroupItem>
+                                <ListGroupItem key={item.id}>
                                   <GameItem
                                     game={item}
-                                    handleChange={() => { handleChange(item); }}
+                                    handleChange={handleChange}
                                   />
                                 </ListGroupItem>
                               );
@@ -217,8 +265,9 @@ function index() {
           <Col className="text-center">
             <Button
               color="success"
+              onClick={() => (encerrarConsulta())}
             >
-              Encerrar consulta
+              {loadingAdd ? 'Encerrando...' : 'Encerrar consulta'}
             </Button>
           </Col>
 

@@ -1,39 +1,80 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import {
-  Row, Col, Card, Input, ListGroup, ListGroupItem, Button,
+  Row, Col, Card, Input, ListGroup, ListGroupItem, Button, Spinner,
 } from 'reactstrap';
 import CardConsultBase from '../../components/Card/ConsultPage/CardConsultBase';
 import CardLastsConsults from '../../components/Card/ConsultPage/CardLastsConsults';
 import CardLastSends from '../../components/Card/ConsultPage/CardLastSends';
 import CardPacient from '../../components/Card/ConsultPage/CardPacient';
 import CardSelectedActivities from '../../components/Card/ConsultPage/CardSelectedActivities';
+import ActivityGraph from '../../components/Graphs/ActivityGraph';
 import Main from '../../components/layout/Main';
+import useAuth from '../../hooks/useAuth';
 import { mocks } from '../../mocks';
+import { fetchActivities } from '../../service/API/activities';
+import { fetchPatient } from '../../service/API/pacients';
 
 function PacienteDetalhe() {
-  const [games, setGames] = useState([
-    {
-      id: 1, nome: 'Ligue o som', maxLevel: '1', selected: false,
-    },
-    {
-      id: 2, nome: 'Som animal', maxLevel: '1', selected: false,
-    },
-    {
-      id: 3, nome: 'Para-Escuta-Para', maxLevel: '1', selected: true,
-    },
-  ]);
+  const { coolClearToken } = useAuth();
+  const { push, query } = useRouter();
+  const [loading, setLoading] = useState(true);
 
+  const [pacient, setPacient] = useState({});
+  const [activities, setActivities] = useState([]);
+
+  useEffect(async () => {
+    setLoading(true);
+    if (coolClearToken && query.pacienteDetalhe) {
+      const response = await fetchPatient({
+        token: coolClearToken,
+        pacient_id: query.pacienteDetalhe,
+      });
+      const response2 = await fetchActivities({
+        token: coolClearToken,
+      });
+      if (response.status === 200 && response2.status === 200) {
+        setPacient(response.data);
+        setActivities(response2.data);
+        setLoading(false);
+      }
+      // const response2 = await fetchActivities({ token: coolClearToken });
+      // if (response.status === 200 && response2.status === 200) {
+      //   // console.log(response2.data);
+      //   const gamesApi = response2.data.map((item) => ({
+      //     id: item.id,
+      //     nome: item.name,
+      //     maxLevel: item.number_of_difficulty_levels,
+      //     selectedDifficulty: 1,
+      //     selected: false,
+      //   }));
+      //   setGames(gamesApi);
+      //   setConsult(response.data);
+      //   // setConsultData(response.data);
+      //   setLoading(false);
+      // }
+    }
+  }, [coolClearToken, query]);
+  if (loading) {
+    return (
+      <div style={{ marginTop: '50px' }}>
+        <Row className="justify-content-center">
+          <Spinner size="lg" />
+        </Row>
+      </div>
+    );
+  }
   return (
     <div style={{ marginTop: '50px' }}>
       <Card body>
         <Row>
           <Col>
-            <CardPacient editButton pacientData={mocks.pacientData} />
+            <CardPacient editButton pacientData={pacient} />
           </Col>
           <Col>
-            <CardLastsConsults />
+            <CardLastsConsults allConsults />
           </Col>
         </Row>
         <Row className="mt-3">
@@ -46,7 +87,11 @@ function PacienteDetalhe() {
         </Row>
         <Row className="mt-3 mb-3">
           <Col>
-            gráficos de desempenho
+            {activities.length !== 0
+              ? activities.map((item) => (
+                <ActivityGraph data={item} />
+              ))
+              : 'Não há registro de envios'}
           </Col>
 
         </Row>

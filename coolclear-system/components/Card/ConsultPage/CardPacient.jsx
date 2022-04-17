@@ -59,8 +59,7 @@ function CardPacient({ pacientData, editButton }) {
                   {pacientData.prontuario}
                 </Col>
                 <Col xl={2} lg={4} md={4} xs={4}>
-                  <i className="fas fa-mars" />
-                  <i className="fas fa-venus" />
+                  {pacientData.sexo === 'M' ? <i className="fas fa-mars" /> : <i className="fas fa-venus" />}
                 </Col>
 
                 <Col xl={6} lg={8} md={8}>

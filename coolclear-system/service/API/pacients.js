@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-param-reassign */
 import axios from 'axios';
 
@@ -131,14 +132,42 @@ export async function fetchPatients(params) {
       if (resp.data.lenght !== 0) {
         resp.data = resp.data.map((item) => ({
           id: item.id,
-          responsavel: { nome: 'Teste', id: item.responsable.id },
+          responsavel: { nome: `${item.responsable.user.first_name} ${item.responsable.user.last_name}` },
           nome: `${item.first_name} ${item.last_name}`,
           prontuario: item.medical_record_number,
-          dataNascimento: item.birthdate,
-          dataImplante: item.implant_date,
+          dataNascimento: item.birthdate.substring(0, item.birthdate.length - 8),
+          dataImplante: item.implant_date.substring(0, item.implant_date.length - 8),
           sexo: item.gender,
         }));
       }
+      return resp;
+    })
+    .catch((error) => error.response);
+  return response;
+}
+
+export async function fetchPatient(params) {
+  let response = {};
+  const baseFetchUrl = `patients/${params.pacient_id}`;
+  response = await instance
+    .get(
+      baseFetchUrl,
+      {
+        headers: {
+          Authorization: `Bearer ${params.token}`,
+        },
+      },
+    )
+    .then((resp) => {
+      resp.data = {
+        id: resp.data.id,
+        responsavel: { nome: `${resp.data.responsable.user.first_name} ${resp.data.responsable.user.last_name}` },
+        nome: `${resp.data.first_name} ${resp.data.last_name}`,
+        prontuario: resp.data.medical_record_number,
+        dataNascimento: resp.data.birthdate.substring(0, resp.data.birthdate.length - 14),
+        dataImplante: resp.data.implant_date.substring(0, resp.data.implant_date.length - 14),
+        sexo: resp.data.gender,
+      };
       return resp;
     })
     .catch((error) => error.response);
