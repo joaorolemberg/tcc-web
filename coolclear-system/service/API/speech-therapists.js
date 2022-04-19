@@ -38,8 +38,6 @@ export async function fetchSpeechTherapists(params) {
 export async function fetchSpeechTherapist(params) {
   let response = {};
   const baseFetchUrl = `speech-therapists/${params.speech_therapist_id}`;
-  console.log(baseFetchUrl);
-
   //   if (params.dataInicio) { baseFetchUrl = `${baseFetchUrl}&DataInicio=${params.dataInicio}`; }
   //   if (params.dataFim) { baseFetchUrl = `${baseFetchUrl}&DataFim=${params.dataFim}`; }
 
