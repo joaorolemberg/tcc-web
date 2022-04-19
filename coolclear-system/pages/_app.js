@@ -11,6 +11,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import Middleware from '../components/HOC/Middleware';
 import { ReRenderProvider } from '../context/ReRenderContext';
 import { ConsultProvider } from '../context/ConsultContext';
+import { GraphDataProvider } from '../context/GraphDataContext';
 
 function MyApp({ Component, pageProps }) {
   const Layout = Component.layout || (({ children }) => <div>{children}</div>);
@@ -30,11 +31,13 @@ function MyApp({ Component, pageProps }) {
         <AuthContextProvider>
           <ReRenderProvider>
             <ConsultProvider>
-              <Middleware>
-                <Layout>
-                  <Component {...pageProps} />
-                </Layout>
-              </Middleware>
+              <GraphDataProvider>
+                <Middleware>
+                  <Layout>
+                    <Component {...pageProps} />
+                  </Layout>
+                </Middleware>
+              </GraphDataProvider>
             </ConsultProvider>
           </ReRenderProvider>
         </AuthContextProvider>

@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   Card,
-  Col, Input, Row, Label, FormGroup,
+  Col, Input, Row, Label, FormGroup, Spinner,
 } from 'reactstrap';
 import Router from 'next/router';
 import MainCard from '../../components/Card/MainCard';
@@ -14,16 +14,48 @@ import useAuth from '../../hooks/useAuth';
 import { fetchActivities } from '../../service/API/activities';
 import { fetchSpeechTherapist } from '../../service/API/speech-therapists';
 import DatalistInput from '../../components/List/DatalistInput';
+import ActivityGraph from '../../components/Graphs/ActivityGraph';
+import useGraphData from '../../hooks/useGraphData';
 
+// const data = [
+//   [
+//     'Month',
+//     'Bolivia',
+//     'Ecuador',
+//     'Madagascar',
+//     'Papua New Guinea',
+//     'Rwanda',
+//     'Average',
+//   ],
+//   ['2004/05', 165, 938, 522, 998, 450, 614.6],
+//   ['2005/06', 135, 1120, 599, 1268, 288, 682],
+//   ['2006/07', 157, 1167, 587, 807, 397, 623],
+//   ['2007/08', 139, 1110, 615, 968, 215, 609.4],
+//   ['2008/09', 136, 691, 629, 1026, 366, 569.6],
+// ];
+// const options = {
+//   title: 'Monthly Coffee Production by Country',
+//   vAxis: { title: 'Cups' },
+//   hAxis: { title: 'Month' },
+//   seriesType: 'bars',
+//   series: { 5: { type: 'line' } },
+// };
 const Dashboard = function b() {
   const { coolClearToken, user } = useAuth();
-
+  const {
+    lineGraphDataPatient,
+    pizzaGraphDataPatient,
+    handleGraph,
+    enabled,
+    setEnabled,
+    loadingGraphs,
+  } = useGraphData();
   // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(true);
   const [patients, setPatients] = useState([]);
   const [activities, setActivities] = useState([]);
   const [selectedActivity, setSelectedActivity] = useState('');
-  const [selectedMetric, setSelectedMetric] = useState({});
+  const [selectedMetric, setSelectedMetric] = useState('');
   const [selectedPatient, setSelectedPatient] = useState({});
 
   const metricOptions = useMemo(() => {
@@ -63,6 +95,19 @@ const Dashboard = function b() {
         });
     }
   }, [coolClearToken, user]);
+  useEffect(() => {
+    console.log({
+      selectedPatient,
+      selectedActivity,
+      selectedMetric,
+    });
+    if (selectedPatient.key && selectedActivity !== '' && selectedMetric !== '') {
+      console.log('emtrou');
+      handleGraph(selectedPatient, selectedActivity, selectedMetric);
+    } else {
+      setEnabled(false);
+    }
+  }, [selectedPatient, selectedActivity, selectedMetric]);
 
   if (loading) {
     return <div> carregando</div>;
@@ -135,39 +180,75 @@ const Dashboard = function b() {
           </Row>
         </Col>
       </Row>
-      <Card body>
-        <Row>
-          <Col className="text-center">Gráfico do paciente</Col>
-        </Row>
-        <Row className="mt-3">
-          <Col className="text-center">
-            Gráfico 1
-          </Col>
-          <Col className="text-center">
-            Gráfico 2
-          </Col>
-          <Col className="text-center">
-            Gráfico 3
-          </Col>
-        </Row>
-      </Card>
+      {enabled
+        ? (
+          <div>
+            {loadingGraphs ? (
+              <div>
+                <Row className="justify-content-center">
+                  <Spinner />
+                </Row>
+              </div>
+            )
+              : (
+                <div>
+                  <Card body>
+                    <Row>
+                      <Col className="text-center">Gráfico do paciente</Col>
+                    </Row>
+                    <Row className="mt-3">
+                      <Col xl={4}>
+                        <ActivityGraph
+                          data={lineGraphDataPatient.data}
+                          options={lineGraphDataPatient.options}
+                          chartType={lineGraphDataPatient.chartType}
+                        />
+                      </Col>
+                      <Col xl={4}>
+                        <ActivityGraph
+                          data={pizzaGraphDataPatient.data}
+                          options={pizzaGraphDataPatient.options}
+                          chartType={pizzaGraphDataPatient.chartType}
+                        />
+                      </Col>
+                      <Col xl={4}>
+                        <ActivityGraph
+                          data={pizzaGraphDataPatient.data}
+                          options={pizzaGraphDataPatient.options}
+                          chartType={pizzaGraphDataPatient.chartType}
+                        />
+                      </Col>
+                    </Row>
+                  </Card>
 
-      <Card body>
-        <Row>
-          <Col className="text-center">Gráfico geral</Col>
-        </Row>
-        <Row className="mt-3">
-          <Col className="text-center">
-            Gráfico 1
-          </Col>
-          <Col className="text-center">
-            Gráfico 2
-          </Col>
-          <Col className="text-center">
-            Gráfico 3
-          </Col>
-        </Row>
-      </Card>
+                  <Card body className="mt-3 mb-3">
+                    <Row>
+                      <Col className="text-center">Gráfico geral</Col>
+                    </Row>
+                    <Row className="mt-3">
+                      <Col className="text-center">
+                        Gráfico 1
+                      </Col>
+                      <Col className="text-center">
+                        Gráfico 2
+                      </Col>
+                      <Col className="text-center">
+                        Gráfico 3
+                      </Col>
+                    </Row>
+                  </Card>
+
+                </div>
+              )}
+          </div>
+        )
+        : (
+          <div>
+            <Row className="text-center">
+              <h3>Por favor selecione todos os parâmetros para visualizar os gráficos</h3>
+            </Row>
+          </div>
+        )}
 
     </div>
   );
