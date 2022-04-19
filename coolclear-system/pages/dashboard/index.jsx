@@ -16,6 +16,7 @@ import { fetchSpeechTherapist } from '../../service/API/speech-therapists';
 import DatalistInput from '../../components/List/DatalistInput';
 import ActivityGraph from '../../components/Graphs/ActivityGraph';
 import useGraphData from '../../hooks/useGraphData';
+import GraphsRow from '../../components/Graphs/GraphsRow';
 
 // const data = [
 //   [
@@ -40,11 +41,10 @@ import useGraphData from '../../hooks/useGraphData';
 //   seriesType: 'bars',
 //   series: { 5: { type: 'line' } },
 // };
+
 const Dashboard = function b() {
   const { coolClearToken, user } = useAuth();
   const {
-    lineGraphDataPatient,
-    pizzaGraphDataPatient,
     handleGraph,
     enabled,
     setEnabled,
@@ -196,29 +196,7 @@ const Dashboard = function b() {
                     <Row>
                       <Col className="text-center">Gráfico do paciente</Col>
                     </Row>
-                    <Row className="mt-3">
-                      <Col xl={4}>
-                        <ActivityGraph
-                          data={lineGraphDataPatient.data}
-                          options={lineGraphDataPatient.options}
-                          chartType={lineGraphDataPatient.chartType}
-                        />
-                      </Col>
-                      <Col xl={4}>
-                        <ActivityGraph
-                          data={pizzaGraphDataPatient.data}
-                          options={pizzaGraphDataPatient.options}
-                          chartType={pizzaGraphDataPatient.chartType}
-                        />
-                      </Col>
-                      <Col xl={4}>
-                        <ActivityGraph
-                          data={pizzaGraphDataPatient.data}
-                          options={pizzaGraphDataPatient.options}
-                          chartType={pizzaGraphDataPatient.chartType}
-                        />
-                      </Col>
-                    </Row>
+                    <GraphsRow />
                   </Card>
 
                   <Card body className="mt-3 mb-3">
