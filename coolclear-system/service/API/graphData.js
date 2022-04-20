@@ -9,21 +9,35 @@ const instance = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-export async function fetchPerformanceByActivity(params) {
-  const data = [
-    [
-      'Month',
-      'Bolivia',
-      'Ecuador',
-      'Madagascar',
-      'Papua New Guinea',
-      'Rwanda',
-      'Average',
-    ],
-    ['2004/05', 165, 938, 522, 998, 450, 614.6],
-    ['2005/06', 135, 1120, 599, 1268, 288, 682],
-    ['2006/07', 157, 1167, 587, 807, 397, 623],
-    ['2007/08', 139, 1110, 615, 968, 215, 609.4],
-    ['2008/09', 136, 691, 629, 1026, 366, 569.6],
-  ];
+export async function fetchPerformance(params) {
+  let response = {};
+  let baseFetchUrl = 'patients-activities-register?';
+  if (params.patient_id) { baseFetchUrl = `${baseFetchUrl}patient_id=${params.patient_id}`; }
+  if (params.activity_id) { baseFetchUrl = `${baseFetchUrl}&activity_id=${params.activity_id}`; }
+  if (params.metric_id) { baseFetchUrl = `${baseFetchUrl}&metric_id=${params.metric_id}`; }
+  console.log(baseFetchUrl);
+  response = await instance
+    .get(baseFetchUrl, {
+      headers: {
+        Authorization: `Bearer ${params.token}`,
+      },
+    })
+    .then((resp) => resp)
+    .catch((error) => error.response);
+  return response;
+}
+export async function fetchPerformanceAllPatients(params) {
+  let response = {};
+  let baseFetchUrl = 'patients-activities-register/all';
+  if (params.activity_id) { baseFetchUrl = `${baseFetchUrl}?activity_id=${params.activity_id}`; }
+  if (params.metric_id) { baseFetchUrl = `${baseFetchUrl}?metric_id=${params.metric_id}`; }
+  response = await instance
+    .get(baseFetchUrl, {
+      headers: {
+        Authorization: `Bearer ${params.token}`,
+      },
+    })
+    .then((resp) => resp)
+    .catch((error) => error.response);
+  return response;
 }

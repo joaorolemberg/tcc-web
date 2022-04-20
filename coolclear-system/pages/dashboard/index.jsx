@@ -18,30 +18,6 @@ import ActivityGraph from '../../components/Graphs/ActivityGraph';
 import useGraphData from '../../hooks/useGraphData';
 import GraphsRow from '../../components/Graphs/GraphsRow';
 
-// const data = [
-//   [
-//     'Month',
-//     'Bolivia',
-//     'Ecuador',
-//     'Madagascar',
-//     'Papua New Guinea',
-//     'Rwanda',
-//     'Average',
-//   ],
-//   ['2004/05', 165, 938, 522, 998, 450, 614.6],
-//   ['2005/06', 135, 1120, 599, 1268, 288, 682],
-//   ['2006/07', 157, 1167, 587, 807, 397, 623],
-//   ['2007/08', 139, 1110, 615, 968, 215, 609.4],
-//   ['2008/09', 136, 691, 629, 1026, 366, 569.6],
-// ];
-// const options = {
-//   title: 'Monthly Coffee Production by Country',
-//   vAxis: { title: 'Cups' },
-//   hAxis: { title: 'Month' },
-//   seriesType: 'bars',
-//   series: { 5: { type: 'line' } },
-// };
-
 const Dashboard = function b() {
   const { coolClearToken, user } = useAuth();
   const {
@@ -49,31 +25,19 @@ const Dashboard = function b() {
     enabled,
     setEnabled,
     loadingGraphs,
+    setToken,
   } = useGraphData();
   // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(true);
   const [patients, setPatients] = useState([]);
   const [activities, setActivities] = useState([]);
   const [selectedActivity, setSelectedActivity] = useState('');
-  const [selectedMetric, setSelectedMetric] = useState('');
+  // const [selectedMetric, setSelectedMetric] = useState('');
   const [selectedPatient, setSelectedPatient] = useState({});
-
-  const metricOptions = useMemo(() => {
-    if (selectedActivity === '') {
-      return [];
-    }
-    const options = activities.filter((activity) => {
-      if (activity.id === selectedActivity) {
-        return true;
-      }
-      return false;
-    });
-    return options[0].metrics;
-    // return selectedActivity.me
-  }, [selectedActivity]);
 
   useEffect(async () => {
     if (coolClearToken) {
+      setToken(coolClearToken);
       setLoading(true);
       const responsePatients = fetchSpeechTherapist({
         token: coolClearToken,
@@ -95,19 +59,14 @@ const Dashboard = function b() {
         });
     }
   }, [coolClearToken, user]);
+
   useEffect(() => {
-    console.log({
-      selectedPatient,
-      selectedActivity,
-      selectedMetric,
-    });
-    if (selectedPatient.key && selectedActivity !== '' && selectedMetric !== '') {
-      console.log('emtrou');
-      handleGraph(selectedPatient, selectedActivity, selectedMetric);
+    if (selectedPatient.key && selectedActivity !== '') {
+      handleGraph(selectedPatient.key, selectedActivity, activities);
     } else {
       setEnabled(false);
     }
-  }, [selectedPatient, selectedActivity, selectedMetric]);
+  }, [selectedPatient, selectedActivity]);
 
   if (loading) {
     return <div> carregando</div>;
@@ -135,10 +94,8 @@ const Dashboard = function b() {
         </Col>
         <Col className="p-3">
           <Row>
-            <Col sm={2}>
-              <Label sm={2} for="selectedActivity">Atividades:</Label>
-            </Col>
-            <Col sm={10}>
+            <Col>
+              <Label for="selectedActivity">Atividades:</Label>
               <Input
                 id="selectActivity"
                 name="select"
@@ -152,29 +109,6 @@ const Dashboard = function b() {
                     {activity.name}
                   </option>
                 ))}
-              </Input>
-            </Col>
-          </Row>
-          <Row>
-            <Col sm={2}>
-              <Label sm={2} for="selectedMetric">Métricas:</Label>
-            </Col>
-            <Col sm={10}>
-              <Input
-                id="selectedMetric"
-                name="select"
-                type="select"
-                onChange={(e) => { setSelectedMetric(e.target.value); }}
-                disabled={selectedActivity === ''}
-              >
-                <option disabled selected value> -- selecione -- </option>
-                <option value="all"> Todas </option>
-                { selectedActivity !== '' ? metricOptions.map((metric) => (
-                  <option key={metric.id} value={metric.id}>
-                    {metric.name}
-                  </option>
-                ))
-                  : <div />}
               </Input>
             </Col>
           </Row>
