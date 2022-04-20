@@ -15,7 +15,6 @@ export async function fetchPerformance(params) {
   if (params.patient_id) { baseFetchUrl = `${baseFetchUrl}patient_id=${params.patient_id}`; }
   if (params.activity_id) { baseFetchUrl = `${baseFetchUrl}&activity_id=${params.activity_id}`; }
   if (params.metric_id) { baseFetchUrl = `${baseFetchUrl}&metric_id=${params.metric_id}`; }
-  console.log(baseFetchUrl);
   response = await instance
     .get(baseFetchUrl, {
       headers: {
@@ -28,7 +27,7 @@ export async function fetchPerformance(params) {
 }
 export async function fetchPerformanceAllPatients(params) {
   let response = {};
-  let baseFetchUrl = 'patients-activities-register/all';
+  let baseFetchUrl = 'patients-activities-register?'; // acionar all na rota
   if (params.activity_id) { baseFetchUrl = `${baseFetchUrl}?activity_id=${params.activity_id}`; }
   if (params.metric_id) { baseFetchUrl = `${baseFetchUrl}?metric_id=${params.metric_id}`; }
   response = await instance

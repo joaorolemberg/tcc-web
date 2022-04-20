@@ -26,6 +26,7 @@ const Dashboard = function b() {
     setEnabled,
     loadingGraphs,
     setToken,
+    loadingGraphsAllPatients,
   } = useGraphData();
   // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(true);
@@ -130,26 +131,21 @@ const Dashboard = function b() {
                     <Row>
                       <Col className="text-center">Gráfico do paciente</Col>
                     </Row>
-                    <GraphsRow />
+                    <GraphsRow allPatients={false} />
                   </Card>
-
-                  <Card body className="mt-3 mb-3">
-                    <Row>
-                      <Col className="text-center">Gráfico geral</Col>
+                  {loadingGraphsAllPatients ? (
+                    <Row className="justify-content-center">
+                      <Spinner />
                     </Row>
-                    <Row className="mt-3">
-                      <Col className="text-center">
-                        Gráfico 1
-                      </Col>
-                      <Col className="text-center">
-                        Gráfico 2
-                      </Col>
-                      <Col className="text-center">
-                        Gráfico 3
-                      </Col>
-                    </Row>
-                  </Card>
-
+                  )
+                    : (
+                      <Card body className="mt-3 mb-3">
+                        <Row>
+                          <Col className="text-center">Gráfico Geral </Col>
+                        </Row>
+                        <GraphsRow allPatients />
+                      </Card>
+                    )}
                 </div>
               )}
           </div>
