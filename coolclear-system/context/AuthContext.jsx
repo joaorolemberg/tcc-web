@@ -5,13 +5,6 @@ import { destroyCookie, parseCookies, setCookie } from 'nookies';
 import React, { createContext, useState } from 'react';
 import { loginAPI, meRoute } from '../service/API/account';
 
-const initialStateAuthenticated = () => {
-  if (typeof window !== 'undefined') {
-    const localData = parseCookies();
-    return localData.isAuthenticated ? JSON.parse(localData.isAuthenticated) : false;
-  }
-  return null;
-};
 const initalStateToken = () => {
   if (typeof window !== 'undefined') {
     const localData = parseCookies();
@@ -30,7 +23,6 @@ const initialStateUser = () => {
 const AuthContext = createContext({});
 
 export const AuthContextProvider = function b({ children }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(initialStateAuthenticated());
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [coolClearToken, setCoolClearToken] = useState(initalStateToken());
   const [user, setUser] = useState(initialStateUser());
@@ -70,14 +62,16 @@ export const AuthContextProvider = function b({ children }) {
   };
 
   const logout = () => {
-    setIsAuthenticated(false);
-    destroyCookie(null, 'isAuthenticated');
+    destroyCookie(null, 'coolClearToken');
+    destroyCookie(null, 'userCoolClear');
+    setUser({});
+    setCoolClearToken('');
     Router.replace('/auth/login');
   };
   return (
     <AuthContext.Provider
       value={{
-        isAuthenticated, login, logout, isAuthenticating, coolClearToken, user,
+        login, logout, isAuthenticating, coolClearToken, user,
       }}
     >
       {children}

@@ -72,15 +72,7 @@ const Consulta = function b() {
       <Row className="justify-content-center">
         <Col xl={10} lg={11} md={11}>
           <MainCard
-            search={{
-              types: [{ id: 1, param: 'name', label: 'Nome' },
-                { id: 2, param: 'email', label: 'Email' }],
-            }}
             add={() => setModalState(true)}
-            pagination
-            filter={[{ id: 1, param: 'newest', label: 'Mais recentes' },
-              { id: 2, param: 'Agendada', label: 'Agendada' },
-              { id: 3, param: 'Finalizada', label: 'Finalizada' }]}
             title="Consulta"
           >
             <ComponentRowList

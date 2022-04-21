@@ -9,15 +9,44 @@ import {
 import { tiposStatus } from '../../service/functionsAndTypes';
 import CheckConsultaModal from '../Modal/CheckConsultaModal';
 
-const ListItemConsulta = function a({ data }) {
+const ListItemConsulta = function a({ data, small }) {
   const [modalState, setModalState] = useState(false);
+  if (small) {
+    return (
+      <div>
+        <div className="p-1">
+          <Row>
+            <Col xl={1} md={1} xs={2} className="align-self-center text-center">
+              <span>
+                {data.paciente.sexo === 'F' ? (
+                  <i className="fas fa-female fa-2x" />
+                ) : (
+                  <i className="fas fa-male fa-2x" />
+                )}
+              </span>
+            </Col>
+            <Col xl={7} md={6} xs={10} className="align-self-center">
+              <Row>
+                <Col style={{ fontSize: '1.2em' }}>{data.paciente.nome}</Col>
+              </Row>
+              <Row>
+                <Col style={{ color: 'grey' }}>
+                  <i className="fas fa-user-shield" />
+                  {'  '}
+                  {data.responsavel.nome}
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+        </div>
+      </div>
+    );
+  }
   return (
     <div>
       <div
         onClick={() => {
-          if (data.status === 'Cancelada' || data.status === 'Concluida') {
-            console.log('nao pode entrar');
-          } else {
+          if (data.status === 'Agendada') {
             setModalState(true);
           }
         }}
@@ -49,9 +78,6 @@ const ListItemConsulta = function a({ data }) {
             <Row className="justify-content-center">
               {format(parseISO(data.data), "dd'/'MM'/'yyyy ")}
             </Row>
-            {/* <Row className="justify-content-center">
-              {format(parseISO(data.data), "HH':'mm")}
-            </Row> */}
           </Col>
           <Col xl={2} md={3} xs={6} className="align-self-center">
             <Row className="justify-content-center mb-2">
@@ -70,57 +96,6 @@ const ListItemConsulta = function a({ data }) {
           consultData={data}
         />
       </div>
-      {/* <ModalWith2Buttons
-        confirmAction={{
-          action:
-          () => { enqueueSnackbar(`Responsavel ${inputs.nome} com email ${inputs.email} editado`,
-          { variant: 'success' }); },
-          label: 'Editar',
-        }}
-        declineAction={{ action: () => { setModalState(false); }, label: 'Cancelar' }}
-        modalState={modalState}
-        setModalState={setModalState}
-        title="Editar Responsável"
-      >
-        <FormGroup row>
-          <Label for="nome" sm={2}>
-            Nome:
-          </Label>
-          <Col sm={10}>
-            <Input
-              id="nome"
-              name="nome"
-              placeholder="Nome do responsável"
-              type="text"
-              required
-              onChange={(e) => setInputs((currState) => ({
-                ...currState,
-                nome: e.target.value,
-              }))}
-              value={inputs.nome}
-            />
-          </Col>
-        </FormGroup>
-        <FormGroup row>
-          <Label for="exampleEmail" sm={2}>
-            Email:
-          </Label>
-          <Col sm={10}>
-            <Input
-              id="exampleEmail"
-              name="email"
-              placeholder="Email do responsável"
-              type="email"
-              onChange={(e) => setInputs((currState) => ({
-                ...currState,
-                email: e.target.value,
-              }))}
-              value={inputs.email}
-              required
-            />
-          </Col>
-        </FormGroup>
-      </ModalWith2Buttons> */}
     </div>
   );
 };

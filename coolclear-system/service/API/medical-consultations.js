@@ -44,7 +44,7 @@ export async function fetchMedicalConsultations(params) {
           },
           observation: item.observation,
           speech_therapist_patient_id: item.speech_therapist_patient_id,
-          responsavel: { nome: 'Pedro' },
+          responsavel: { nome: `${item.speech_therapist_patient.patient.responsable.user.first_name} ${item.speech_therapist_patient.patient.responsable.user.last_name}` },
           tipo: item.type,
           status: item.status,
           data: item.date.substring(0, item.date.length - 8),

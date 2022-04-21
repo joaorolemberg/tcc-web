@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import {
-  Col, Input, Row, FormGroup, Label,
+  Col, Input, Row, FormGroup, Label, Spinner,
 } from 'reactstrap';
 import { useSnackbar } from 'notistack';
 import Router from 'next/router';
@@ -41,7 +41,6 @@ const Responsavel = function b() {
         const response = await fetchResponsables({ token: coolClearToken });
         if (response.status === 200) {
           setResponsables(response.data);
-          console.log(response.data);
         }
         setLoading(false);
       } else if (reRender) {
@@ -78,7 +77,13 @@ const Responsavel = function b() {
     setModalState(false);
   };
   if (loading) {
-    return <div>Carregando</div>;
+    return (
+      <div style={{ marginTop: '50px' }}>
+        <Row className="justify-content-center">
+          <Spinner size="lg" />
+        </Row>
+      </div>
+    );
   }
 
   return (

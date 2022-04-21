@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Card,
-  Col, Input, Row, Label, FormGroup, Spinner,
+  Col, Input, Row, Label, FormGroup, Spinner, Button,
 } from 'reactstrap';
 import Router from 'next/router';
+import { useReactToPrint } from 'react-to-print';
 import MainCard from '../../components/Card/MainCard';
 import Main from '../../components/layout/Main';
 import ComponentRowList from '../../components/List/ComponentRowList';
@@ -70,7 +71,13 @@ const Dashboard = function b() {
   }, [selectedPatient, selectedActivity]);
 
   if (loading) {
-    return <div> carregando</div>;
+    return (
+      <div style={{ marginTop: '50px' }}>
+        <Row className="justify-content-center">
+          <Spinner size="lg" />
+        </Row>
+      </div>
+    );
   }
   return (
     <div style={{ marginTop: '50px' }}>
@@ -79,7 +86,6 @@ const Dashboard = function b() {
           <h2>Dashboard</h2>
         </Col>
       </Row>
-
       <Row>
         <Col>
           <Row className="p-3">
@@ -157,7 +163,6 @@ const Dashboard = function b() {
             </Row>
           </div>
         )}
-
     </div>
   );
 };

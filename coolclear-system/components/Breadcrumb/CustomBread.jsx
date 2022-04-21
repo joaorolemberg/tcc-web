@@ -79,7 +79,7 @@ const CustomBread = function a() {
               )}
             </BreadcrumbItem>
           ))}
-          <BreadcrumbItem className="d-block d-sm-none">
+          {/* <BreadcrumbItem className="d-block d-sm-none">
             XS
           </BreadcrumbItem>
           <BreadcrumbItem className="d-none d-sm-block d-md-none">
@@ -93,7 +93,7 @@ const CustomBread = function a() {
           </BreadcrumbItem>
           <BreadcrumbItem className="d-none d-xl-block">
             XL
-          </BreadcrumbItem>
+          </BreadcrumbItem> */}
         </Breadcrumb>
       </Card>
 

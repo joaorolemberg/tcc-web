@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Col, Row,
+  Col, Row, Spinner,
 } from 'reactstrap';
 import Router from 'next/router';
 import MainCard from '../../components/Card/MainCard';
@@ -32,19 +32,20 @@ const Paciente = function b() {
   }, [coolClearToken, user]);
 
   if (loading) {
-    return <div> carregando</div>;
+    return (
+      <div style={{ marginTop: '50px' }}>
+        <Row className="justify-content-center">
+          <Spinner size="lg" />
+        </Row>
+      </div>
+    );
   }
   return (
     <div style={{ marginTop: '50px' }}>
       <Row className="justify-content-center">
         <Col xl={10} lg={11} md={11}>
           <MainCard
-            search={{
-              types: [{ id: 1, param: 'name', label: 'Nome' },
-                { id: 2, param: 'email', label: 'Email' }],
-            }}
             add={() => Router.push('/paciente/adicionar')}
-            pagination
             title="Pacientes"
           >
             <ComponentRowList

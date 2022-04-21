@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  NavbarBrand, NavbarToggler, Navbar,
+  NavbarBrand, NavbarToggler, Navbar, Dropdown, DropdownItem, DropdownMenu, DropdownToggle,
 } from 'reactstrap';
+import useAuth from '../../hooks/useAuth';
+
 // eslint-disable-next-line react/prop-types
 export default function MainNavbar({ setSidebarOpen }) {
+  const { user, logout } = useAuth();
+  const [dropdownIsOpen, setDropdownIsOpen] = useState(false);
   return (
     <Navbar
       color="faded"
@@ -12,7 +16,7 @@ export default function MainNavbar({ setSidebarOpen }) {
     >
       <NavbarToggler
         className="me-2"
-        onClick={() => setSidebarOpen((currState) => (!currState))}
+        onClick={() => setSidebarOpen((currState) => !currState)}
       />
       <NavbarBrand
         href="/"
@@ -21,6 +25,28 @@ export default function MainNavbar({ setSidebarOpen }) {
       >
         CoolClear
       </NavbarBrand>
+      <Dropdown
+        isOpen={dropdownIsOpen}
+        toggle={() => (setDropdownIsOpen((currState) => (!currState)))}
+      >
+        <DropdownToggle
+          nav
+          className="text-white bold"
+        >
+          {user.first_name ? user.first_name : ''}
+        </DropdownToggle>
+        <DropdownMenu>
+          <DropdownItem header>Ações</DropdownItem>
+          <DropdownItem onClick={() => logout()}>
+            <i className="fas fa-sign-out" />
+            {' '}
+            Logout
+          </DropdownItem>
+          <DropdownItem>Another Action</DropdownItem>
+          <DropdownItem divider />
+          <DropdownItem>Another Action</DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
     </Navbar>
   );
 }
