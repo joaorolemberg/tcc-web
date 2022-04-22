@@ -42,7 +42,6 @@ const Consulta = function b() {
         const response = await fetchMedicalConsultations({ token: coolClearToken });
         if (response.status === 200) {
           setConsults(response.data);
-          console.log(response.data);
         }
         setLoading(false);
       } else if (reRender) {

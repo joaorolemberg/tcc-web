@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable radix */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-unused-vars */
@@ -52,6 +53,18 @@ export const GraphDataProvider = function b({ children }) {
     });
     return graphData;
   }
+  function formatDataToGraphNumberAllPatients(data) {
+    const graphData = [];
+    let count = 0;
+    let value = 0;
+    // eslint-disable-next-line array-callback-return
+    data.map((envio) => {
+      // graphData.push([count, parseFloat(envio.performances[0].value)]);
+      value += parseFloat(envio.performances[0].value);
+      count++;
+    });
+    return [[1, value / count]];
+  }
   function formatDataToGraphBooleanProportion(data) {
     let yes = 0;
     let no = 0;
@@ -59,7 +72,7 @@ export const GraphDataProvider = function b({ children }) {
     data.map((envio) => {
       // graphData.push([count, parseFloat(envio.performances[0].value)]);
       // count++;
-      if (parseInt(envio.performances[0].value) === 0) {
+      if (envio.performances[0].value === 'false') {
         no++;
       } else {
         yes++;
@@ -67,6 +80,23 @@ export const GraphDataProvider = function b({ children }) {
     });
 
     return [['Sim', yes], ['Não', no]];
+  }
+
+  function formatDataToGraphBooleanProportionAllPatients(data) {
+    let yes = 0;
+    let no = 0;
+    let count = 0;
+    // eslint-disable-next-line array-callback-return
+    data.map((envio) => {
+      count++;
+      if (envio.performances[0].value === 'false') {
+        no++;
+      } else {
+        yes++;
+      }
+    });
+
+    return [['Sim', yes / count], ['Não', no / count]];
   }
   async function handleJogoMemoria(patient, activity) {
     let metricTempoRestanteAoFinalizar = activity.metrics.find((metric) => (metric.name === 'tempo restante ao finalizar'));
@@ -128,7 +158,7 @@ export const GraphDataProvider = function b({ children }) {
         setGraph1({
           data: metricTempoRestanteAoFinalizar,
           options: {
-            title: 'Tempo de atividade restante por envio',
+            title: 'Tempo de atividade restante por envio (ms)',
             legend: { position: 'bottom' },
           },
           chartType: 'LineChart',
@@ -176,13 +206,13 @@ export const GraphDataProvider = function b({ children }) {
       requestTerminouATempo = fetchPerformanceAllPatients({
         token,
         activity_id: activity.id,
-        metric_id: metricTempoRestanteAoFinalizar.id,
+        metric_id: metricTerminouATempo.id,
       });
 
       requestNumeroDeErros = fetchPerformanceAllPatients({
         token,
         activity_id: activity.id,
-        metric_id: metricTempoRestanteAoFinalizar.id,
+        metric_id: metricNumeroDeErros.id,
       });
 
       await Promise.all([
@@ -195,10 +225,9 @@ export const GraphDataProvider = function b({ children }) {
           && responses[2].status === 200) {
             if (responses[0].data.length !== 0) {
               haveActivity = true;
-
-              metricTempoRestanteAoFinalizar = formatDataToGraphNumber(responses[0].data);
-              metricTerminouATempo = formatDataToGraphBooleanProportion(responses[1].data);
-              metricNumeroDeErros = formatDataToGraphNumber(responses[2].data);
+              metricTempoRestanteAoFinalizar = formatDataToGraphNumberAllPatients(responses[0].data);
+              metricTerminouATempo = formatDataToGraphBooleanProportionAllPatients(responses[1].data);
+              metricNumeroDeErros = formatDataToGraphNumberAllPatients(responses[2].data);
             } else {
               haveActivity = false;
             }
@@ -211,7 +240,7 @@ export const GraphDataProvider = function b({ children }) {
         setGraph1AllPatients({
           data: metricTempoRestanteAoFinalizar,
           options: {
-            title: 'Tempo de atividade restante por envio',
+            title: 'Média de tempo de atividade restante por envio (ms)',
             legend: { position: 'bottom' },
           },
           chartType: 'LineChart',
@@ -222,7 +251,7 @@ export const GraphDataProvider = function b({ children }) {
         setGraph2AllPatients({
           data: metricTerminouATempo,
           options: {
-            title: 'Proporção de conclusão de atividade',
+            title: 'Proporção média de conclusão de atividade',
             is3D: true,
             legend: { position: 'bottom' },
           },
@@ -234,7 +263,7 @@ export const GraphDataProvider = function b({ children }) {
         setGraph3AllPatients({
           data: metricNumeroDeErros,
           options: {
-            title: 'Erros por envio',
+            title: 'Média de erros por envio',
             legend: { position: 'bottom' },
           },
           chartType: 'ColumnChart',
@@ -312,7 +341,7 @@ export const GraphDataProvider = function b({ children }) {
         setGraph1({
           data: metricTempoDeReacaoTotal,
           options: {
-            title: 'Tempo de reação total e médio',
+            title: 'Tempo de reação total e médio por envio (ms)',
             legend: { position: 'bottom' },
             vAxis: { title: 'Tempo em ms' },
             hAxis: { title: 'Envio' },
@@ -352,13 +381,13 @@ export const GraphDataProvider = function b({ children }) {
       requestTempoDeReacaoMedio = fetchPerformanceAllPatients({
         token,
         activity_id: activity.id,
-        metric_id: metricTempoDeReacaoTotal.id,
+        metric_id: metricTempoDeReacaoMedio.id,
       });
 
       requestNumeroDeErros = fetchPerformanceAllPatients({
         token,
         activity_id: activity.id,
-        metric_id: metricTempoDeReacaoTotal.id,
+        metric_id: metricNumeroDeErros.id,
       });
 
       await Promise.all([
@@ -371,9 +400,9 @@ export const GraphDataProvider = function b({ children }) {
             && responses[2].status === 200) {
             if (responses[0].data.length !== 0) {
               haveActivity = true;
-              metricTempoDeReacaoTotal = formatDataToGraphNumber(responses[0].data);
-              metricTempoDeReacaoMedio = formatDataToGraphNumber(responses[1].data);
-              metricNumeroDeErros = formatDataToGraphNumber(responses[2].data);
+              metricTempoDeReacaoTotal = formatDataToGraphNumberAllPatients(responses[0].data);
+              metricTempoDeReacaoMedio = formatDataToGraphNumberAllPatients(responses[1].data);
+              metricNumeroDeErros = formatDataToGraphNumberAllPatients(responses[2].data);
             } else {
               haveActivity = false;
             }
@@ -391,7 +420,7 @@ export const GraphDataProvider = function b({ children }) {
         setGraph1AllPatients({
           data: metricTempoDeReacaoTotal,
           options: {
-            title: 'Tempo de reação total e médio',
+            title: 'Média de tempo de reação total e médio (ms)',
             legend: { position: 'bottom' },
             vAxis: { title: 'Tempo em ms' },
             hAxis: { title: 'Envio' },
@@ -405,7 +434,7 @@ export const GraphDataProvider = function b({ children }) {
         setGraph2AllPatients({
           data: metricNumeroDeErros,
           options: {
-            title: 'Erros por envio',
+            title: 'Média de erros por envio',
             legend: { position: 'bottom' },
           },
           chartType: 'ColumnChart',
@@ -487,14 +516,14 @@ export const GraphDataProvider = function b({ children }) {
       if (haveActivity) {
         for (let index = 0; index < metricTempoDeReacaoTotal.length; index++) {
           const element = metricTempoDeReacaoMedio[index][1];
-          metricTempoDeReacaoTotal[index].push(element / 2);
+          metricTempoDeReacaoTotal[index].push(element);
         }
         metricTempoDeReacaoTotal.unshift(['Envio', 'Tempo de reação total', 'Tempo de reação médio']);
 
         setGraph1({
           data: metricTempoDeReacaoTotal,
           options: {
-            title: 'Tempo de reação total e médio',
+            title: 'Tempo de reação total e médio (ms)',
             legend: { position: 'bottom' },
             vAxis: { title: 'Tempo em ms' },
             hAxis: { title: 'Envio' },
@@ -556,17 +585,17 @@ export const GraphDataProvider = function b({ children }) {
       requestTempoDeReacaoMedio = fetchPerformanceAllPatients({
         token,
         activity_id: activity.id,
-        metric_id: metricTempoDeReacaoTotal.id,
+        metric_id: metricTempoDeReacaoMedio.id,
       });
       requestNumeroDeErros = fetchPerformanceAllPatients({
         token,
         activity_id: activity.id,
-        metric_id: metricTempoDeReacaoTotal.id,
+        metric_id: metricNumeroDeErros.id,
       });
       requestNumeroDeAcertos = fetchPerformanceAllPatients({
         token,
         activity_id: activity.id,
-        metric_id: metricTempoDeReacaoTotal.id,
+        metric_id: metricNumeroDeAcertos.id,
       });
 
       await Promise.all([
@@ -580,28 +609,27 @@ export const GraphDataProvider = function b({ children }) {
           && responses[2].status === 200) {
             if (responses[0].data.length !== 0) {
               haveActivity = true;
-              metricTempoDeReacaoTotal = formatDataToGraphNumber(responses[0].data);
-              metricTempoDeReacaoMedio = formatDataToGraphNumber(responses[1].data);
-              metricNumeroDeErros = formatDataToGraphNumber(responses[2].data);
-              metricNumeroDeAcertos = formatDataToGraphNumber(responses[3].data);
+              metricTempoDeReacaoTotal = formatDataToGraphNumberAllPatients(responses[0].data);
+              metricTempoDeReacaoMedio = formatDataToGraphNumberAllPatients(responses[1].data);
+              metricNumeroDeErros = formatDataToGraphNumberAllPatients(responses[2].data);
+              metricNumeroDeAcertos = formatDataToGraphNumberAllPatients(responses[3].data);
             } else {
               haveActivity = false;
             }
             setSuccess(true);
           }
         });
-
       if (haveActivity) {
         for (let index = 0; index < metricTempoDeReacaoTotal.length; index++) {
           const element = metricTempoDeReacaoMedio[index][1];
-          metricTempoDeReacaoTotal[index].push(element / 2);
+          metricTempoDeReacaoTotal[index].push(element);
         }
         metricTempoDeReacaoTotal.unshift(['Envio', 'Tempo de reação total', 'Tempo de reação médio']);
 
         setGraph1AllPatients({
           data: metricTempoDeReacaoTotal,
           options: {
-            title: 'Tempo de reação total e médio',
+            title: 'Média de tempo de reação total e médio (ms)',
             legend: { position: 'bottom' },
             vAxis: { title: 'Tempo em ms' },
             hAxis: { title: 'Envio' },
@@ -619,11 +647,11 @@ export const GraphDataProvider = function b({ children }) {
           acertos += metricNumeroDeAcertos[index][1];
           metricNumeroDeAcertos[index].push(element);
         }
-        const proporcaoAcertoErroGraph = [['Proporção', 'Proporção de acertos e erros total'], ['Acertos', acertos], ['Erros', erros]];
+        const proporcaoAcertoErroGraph = [['Proporção', 'Proporção da de acertos e erros total'], ['Acertos', acertos], ['Erros', erros]];
         setGraph2AllPatients({
           data: proporcaoAcertoErroGraph,
           options: {
-            title: 'Proporção de acertos e erros total',
+            title: 'Proporção da média acertos e erros total',
             is3D: true,
             legend: { position: 'bottom' },
           },
@@ -634,7 +662,7 @@ export const GraphDataProvider = function b({ children }) {
         setGraph3AllPatients({
           data: metricNumeroDeAcertos,
           options: {
-            title: 'Erros e acertos por envio',
+            title: 'Média de erros e acertos por envio',
             legend: { position: 'bottom' },
             vAxis: { title: 'Quantidade' },
             hAxis: { title: 'Envio' },

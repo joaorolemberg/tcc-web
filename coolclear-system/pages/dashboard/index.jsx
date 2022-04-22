@@ -53,7 +53,7 @@ const Dashboard = function b() {
           if (responses[0].status === 200 && responses[1].status === 200) {
             setActivities(responses[0].data);
             setPatients(responses[1].data.speech_patients.map((item) => ({
-              key: item.id,
+              key: item.patient_id,
               label: `${item.patient.first_name} ${item.patient.last_name}`,
             })));
             setLoading(false);
