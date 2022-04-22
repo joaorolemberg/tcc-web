@@ -42,9 +42,6 @@ export default function MainNavbar({ setSidebarOpen }) {
             {' '}
             Logout
           </DropdownItem>
-          <DropdownItem>Another Action</DropdownItem>
-          <DropdownItem divider />
-          <DropdownItem>Another Action</DropdownItem>
         </DropdownMenu>
       </Dropdown>
     </Navbar>

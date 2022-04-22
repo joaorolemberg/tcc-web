@@ -24,6 +24,42 @@ export async function loginAPI(params) {
     .catch((error) => error.response);
   return data;
 }
+export async function resetPwd(params) {
+  let data = {};
+  const baseFetchUrl = 'users/reset';
+
+  data = await instance
+    .post(
+      baseFetchUrl,
+      params,
+      {
+        headers: {
+          Authorization: `Bearer ${params.token}`,
+        },
+      },
+    )
+    .then((response) => response)
+    .catch((error) => error.response);
+  return data;
+}
+export async function sendResetPwdEmail(params) {
+  let data = {};
+  const baseFetchUrl = 'users/forget';
+
+  data = await instance
+    .post(
+      baseFetchUrl,
+      params,
+      {
+        headers: {
+          Authorization: `Bearer ${params.token}`,
+        },
+      },
+    )
+    .then((response) => response)
+    .catch((error) => error.response);
+  return data;
+}
 export async function meRoute(params) {
   let data = {};
   const baseFetchUrl = '/me';

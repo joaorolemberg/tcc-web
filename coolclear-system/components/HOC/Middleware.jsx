@@ -10,15 +10,23 @@ const Middleware = function a({ children }) {
   useEffect(() => {
     if (coolClearToken) {
       if (coolClearToken === 'NOTLOGGED') {
-        router.replace('/auth/login');
+        if (pathname) {
+          if (pathname.indexOf('auth') > -1) {
+            setPermission(true);
+          } else {
+            router.replace('/auth/login');
+          }
+        }
       } else {
         setPermission(true);
       }
     }
-    if (pathname.indexOf('auth') > -1) {
-      setPermission(true);
+    if (pathname) {
+      if (pathname.indexOf('auth') > -1) {
+        setPermission(true);
+      }
     }
-  }, [coolClearToken]);
+  }, [coolClearToken, pathname]);
 
   if (permission === true) {
     return (

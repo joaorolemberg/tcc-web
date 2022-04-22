@@ -6,6 +6,8 @@ import useAuth from '../hooks/useAuth';
 import Main from '../components/layout/Main';
 import CardWithHeader from '../components/Card/CardWithHeader';
 import { fetchMedicalConsultations } from '../service/API/medical-consultations';
+import ComponentRowList from '../components/List/ComponentRowList';
+import SmallListItem from '../components/List/SmallListItem';
 
 function Home() {
   const { coolClearToken } = useAuth();
@@ -16,7 +18,7 @@ function Home() {
     setLoading(true);
     if (coolClearToken != null) {
       if (coolClearToken === 'NOTLOGGED') {
-        Router.replace('/auth/login');
+        Router.push('/auth/login');
       } else {
         const response = await fetchMedicalConsultations({ token: coolClearToken });
         if (response.status === 200) {
@@ -40,15 +42,13 @@ function Home() {
   }
   return (
     <div>
-      <Row className="bg-dark">
-        <Col>
-          <CardWithHeader title="Últimos envios">
-            Teste
-          </CardWithHeader>
-        </Col>
+      <Row className="mt-3">
         <Col>
           <CardWithHeader title="Consultas de hoje">
-            teste
+            <ComponentRowList
+              list={consults}
+              Component={SmallListItem}
+            />
           </CardWithHeader>
         </Col>
       </Row>
