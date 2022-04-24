@@ -1,17 +1,22 @@
 /* eslint-disable react/prop-types */
+import Router from 'next/router';
+import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import {
   Col, Input, FormGroup, Label, Row,
 } from 'reactstrap';
+import useAuth from '../../hooks/useAuth';
+import { editPatient } from '../../service/API/pacients';
 import ModalWith2Buttons from './ModalWith2Buttons';
 
 function EditPacientModal({
   modalState,
   setModalState,
-  confirmAction,
   declineAction,
   data,
 }) {
+  const { coolClearToken } = useAuth();
+  const { enqueueSnackbar } = useSnackbar();
   const initialState = {
     nome: data.nome,
     prontuario: data.prontuario,
@@ -20,10 +25,33 @@ function EditPacientModal({
     sexo: data.sexo,
   };
   const [inputs, setInputs] = useState(initialState);
-  const [responsavel, setResponsavel] = useState({ id: null, nome: data.responsavel.nome, email: '' });
+
+  async function handleEditPatient() {
+    const objectApi = {
+      first_name: inputs.nome,
+      last_name: '',
+      medical_record_number: inputs.prontuario,
+      implant_date: inputs.dataImplante,
+      birthdate: inputs.dataNascimento,
+      gender: inputs.sexo,
+    };
+
+    const response = await editPatient({
+      token: coolClearToken,
+      objectApi,
+      pacient_id: data.id,
+    });
+
+    if (response.status === 200) {
+      enqueueSnackbar('Paciente editado com sucesso! Recarregando página.', { variant: 'success' });
+      setTimeout(() => { Router.reload(); }, 2000);
+    } else {
+      enqueueSnackbar('Não foi possível editar esse paciente.', { variant: 'error' });
+    }
+  }
   return (
     <ModalWith2Buttons
-      confirmAction={confirmAction}
+      confirmAction={{ action: handleEditPatient, label: 'Editar' }}
       declineAction={declineAction}
       modalState={modalState}
       setModalState={setModalState}
@@ -61,7 +89,7 @@ function EditPacientModal({
                 id="prontuario"
                 name="prontuario"
                 placeholder="Número do prontuário"
-                type="number"
+                type="text"
                 onChange={(e) => setInputs((currState) => ({
                   ...currState,
                   prontuario: e.target.value,
@@ -129,34 +157,13 @@ function EditPacientModal({
                 value={inputs.sexo}
                 required
               >
-                <option>
+                <option value="M">
                   Masculino
                 </option>
-                <option>
+                <option value="F">
                   Feminino
                 </option>
               </Input>
-            </Col>
-          </FormGroup>
-        </Col>
-        <Col xl={12} lg={12} md={12} sm={12} xs={12}>
-          <FormGroup>
-            <Label for="nome">
-              Responsável:
-            </Label>
-            <Col>
-              <Input
-                id="nome"
-                name="nome"
-                placeholder="Nome do paciente"
-                type="text"
-                required
-                onChange={(e) => setResponsavel((currState) => ({
-                  ...currState,
-                  nome: e.target.value,
-                }))}
-                value={responsavel.nome}
-              />
             </Col>
           </FormGroup>
         </Col>

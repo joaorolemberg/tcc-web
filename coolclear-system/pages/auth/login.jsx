@@ -13,6 +13,7 @@ import {
   Spinner,
 } from 'reactstrap';
 import { useSnackbar } from 'notistack';
+import Link from 'next/link';
 import useAuth from '../../hooks/useAuth';
 import Auth from '../../components/layout/Auth';
 import styles from '../../styles/loginPage.module.css';
@@ -85,7 +86,11 @@ function index() {
               className="text-end"
               style={{ fontWeight: 'lighter', fontSize: '0.7em' }}
             >
-              Esqueceu a senha?
+              <Link
+                href="/auth/forgetPassword"
+              >
+                Esqueceu a senha?
+              </Link>
             </CardFooter>
           </Card>
         </Col>

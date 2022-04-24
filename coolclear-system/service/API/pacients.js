@@ -63,7 +63,6 @@ export async function addPacientAndVinculateResponsableAPI(params) {
     .then((response) => response)
     .catch((error) => error.response);
   if (data.status === 200) {
-    console.log('adiconou paciente', data);
     // return true;
     const data2 = await instance
       .post(
@@ -81,7 +80,6 @@ export async function addPacientAndVinculateResponsableAPI(params) {
       .then((response) => response)
       .catch((error) => error.response);
     if (data2.status === 200) {
-      console.log('vinculou fono', data2);
       const data3 = await instance
         .post(
           'responsables/assign-patient',
@@ -98,7 +96,6 @@ export async function addPacientAndVinculateResponsableAPI(params) {
         .then((response) => response)
         .catch((error) => error.response);
       if (data3.status === 200) {
-        console.log('vinculou responsavel', data3);
         return true;
       }
       return false;
@@ -135,14 +132,14 @@ export async function fetchPatients(params) {
           responsavel: { nome: `${item.responsable.user.first_name} ${item.responsable.user.last_name}` },
           nome: `${item.first_name} ${item.last_name}`,
           prontuario: item.medical_record_number,
-          dataNascimento: item.birthdate.substring(0, item.birthdate.length - 8),
-          dataImplante: item.implant_date.substring(0, item.implant_date.length - 8),
+          dataNascimento: item.birthdate ? item.birthdate.substring(0, item.birthdate.length - 8) : '0001/01/01',
+          dataImplante: item.implant_date ? item.implant_date.substring(0, item.implant_date.length - 8) : '0001/01/01',
           sexo: item.gender,
         }));
       }
       return resp;
     })
-    .catch((error) => error.response);
+    .catch((error) => ({ response: error.response, status: error.status }));
   return response;
 }
 
@@ -170,6 +167,24 @@ export async function fetchPatient(params) {
       };
       return resp;
     })
+    .catch((error) => error.response);
+  return response;
+}
+
+export async function editPatient(params) {
+  let response = {};
+  const baseFetchUrl = `patients/${params.pacient_id}`;
+  response = await instance
+    .put(
+      baseFetchUrl,
+      params.objectApi,
+      {
+        headers: {
+          Authorization: `Bearer ${params.token}`,
+        },
+      },
+    )
+    .then((resp) => resp)
     .catch((error) => error.response);
   return response;
 }

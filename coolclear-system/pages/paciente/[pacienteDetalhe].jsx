@@ -85,16 +85,6 @@ function PacienteDetalhe() {
             <CardLastSends />
           </Col>
         </Row>
-        <Row className="mt-3 mb-3">
-          <Col>
-            {activities.length !== 0
-              ? activities.map((item) => (
-                <ActivityGraph data={item} />
-              ))
-              : 'Não há registro de envios'}
-          </Col>
-
-        </Row>
       </Card>
 
     </div>

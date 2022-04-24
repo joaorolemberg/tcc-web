@@ -26,7 +26,7 @@ function CardPacient({ pacientData, editButton }) {
         <Card body style={{ backgroundColor: '#CBDFCC', height: '100%' }}>
           <Row style={{ height: '100%' }}>
             <Col lg={2} className="text-center align-self-center">
-              <i className="fas fa-male fa-5x" />
+              {pacientData.sexo === 'M' ? <i className="fas fa-male fa-5x" /> : <i className="fas fa-female fa-5x" />}
             </Col>
             <Col lg={10}>
               <Row>
@@ -58,10 +58,6 @@ function CardPacient({ pacientData, editButton }) {
                   <i className="fas fa-clipboard-list" />
                   {pacientData.prontuario}
                 </Col>
-                <Col xl={2} lg={4} md={4} xs={4}>
-                  {pacientData.sexo === 'M' ? <i className="fas fa-mars" /> : <i className="fas fa-venus" />}
-                </Col>
-
                 <Col xl={6} lg={8} md={8}>
                   Nascimento:
                   {format(parseISO(pacientData.dataNascimento), "dd'/'MM'/'yyyy ")}
@@ -77,7 +73,7 @@ function CardPacient({ pacientData, editButton }) {
           </Row>
         </Card>
         <EditPacientModal
-          confirmAction={{ action: confirmAction, label: 'Adicionar' }}
+          confirmAction={{ action: confirmAction, label: 'Editar' }}
           declineAction={{ action: declineAction, label: 'Cancelar' }}
           modalState={modalState}
           setModalState={setModalState}
