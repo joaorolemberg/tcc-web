@@ -79,6 +79,8 @@ function index() {
         token: coolClearToken,
         id: query.consultaDetalhe,
       });
+      console.log(response);
+
       const response2 = await fetchActivities({ token: coolClearToken });
       if (response.status === 200 && response2.status === 200) {
         // console.log(response2.data);

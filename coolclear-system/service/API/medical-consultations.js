@@ -83,11 +83,7 @@ export async function fetchMedicalConsultation(params) {
                 - 8,
             ),
           // eslint-disable-next-line max-len
-          dataNascimento:
-            resp.data.speech_therapist_patient.patient.birthdate.substring(
-              0,
-              resp.data.speech_therapist_patient.patient.birthdate.length - 8,
-            ),
+          dataNascimento: resp.data.speech_therapist_patient.patient.birthdate ? resp.data.speech_therapist_patient.patient.birthdate.substring(0, resp.data.speech_therapist_patient.patient.birthdate.length - 8) : '2020-01-01',
           responsavel: { nome: `${resp.data.speech_therapist_patient.patient.responsable.user.first_name} ${resp.data.speech_therapist_patient.patient.responsable.user.last_name}` },
         },
         speech_therapist_patient_id: resp.data.speech_therapist_patient_id,

@@ -28,6 +28,8 @@ const Dashboard = function b() {
     loadingGraphs,
     setToken,
     loadingGraphsAllPatients,
+    averagePatient,
+    averageAllPatients,
   } = useGraphData();
   // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(true);
@@ -137,6 +139,9 @@ const Dashboard = function b() {
                     <Row>
                       <Col className="text-center">Gráfico do paciente</Col>
                     </Row>
+                    <Row>
+                      <Col className="text-center">{averagePatient ? `Desempenho médio calculado: ${averagePatient}` : <div />}</Col>
+                    </Row>
                     <GraphsRow allPatients={false} />
                   </Card>
                   {loadingGraphsAllPatients ? (
@@ -148,6 +153,9 @@ const Dashboard = function b() {
                       <Card body className="mt-3 mb-3">
                         <Row>
                           <Col className="text-center">Gráfico Geral </Col>
+                        </Row>
+                        <Row>
+                          <Col className="text-center">{averageAllPatients ? `Desempenho médio calculado: ${averageAllPatients}` : <div />}</Col>
                         </Row>
                         <GraphsRow allPatients />
                       </Card>
