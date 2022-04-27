@@ -1,14 +1,18 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import {
   Nav, NavItem, NavLink, Collapse,
 } from 'reactstrap';
+import useAuth from '../../hooks/useAuth';
 import routesAdmin from '../../routes';
 import styles from './Sidebar.module.css';
 
 // eslint-disable-next-line react/prop-types
 function Sidebar({ sidebarOpen }) {
+  const { user } = useAuth();
   // eslint-disable-next-line no-unused-vars
-  const [routes, setRoutes] = useState(routesAdmin('adm'));
+
+  const [routes, setRoutes] = useState(routesAdmin(user ? user.is_admin : false));
   return (
     <div>
 

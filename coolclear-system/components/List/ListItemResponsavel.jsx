@@ -39,7 +39,7 @@ const ListItemResponsavel = function a({ data }) {
         confirmAction={{
           action:
           () => {
-            enqueueSnackbar(`Responsavel ${inputs.nome} com email ${inputs.email} editado`, { variant: 'success' });
+            enqueueSnackbar('Edição não habilitada', { variant: 'error' });
           },
           label: 'Editar',
         }}

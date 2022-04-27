@@ -25,12 +25,17 @@ const basicRoutes = [
     icon: 'fa fa-user-shield',
   },
 ];
+const routeAdmin = [
+  {
+    path: '/fonoaudiologo',
+    name: 'Fonoaudiolólogos',
+    icon: 'fas fa-doctor',
+  },
+];
 
-const routesAdmin = (tipoPerfil) => {
-  if (tipoPerfil) {
-    if (tipoPerfil === 'adm') {
-      return (basicRoutes);
-    }
+const routesAdmin = (isAdmin) => {
+  if (isAdmin) {
+    return (routeAdmin);
   }
   return (basicRoutes);
 };

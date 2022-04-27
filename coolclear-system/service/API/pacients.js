@@ -129,7 +129,7 @@ export async function fetchPatients(params) {
       if (resp.data.lenght !== 0) {
         resp.data = resp.data.map((item) => ({
           id: item.id,
-          responsavel: { nome: `${item.responsable.user.first_name} ${item.responsable.user.last_name}` },
+          responsavel: item.responsable ? { nome: `${item.responsable.user.first_name} ${item.responsable.user.last_name}` } : { nome: 'Não cadastrado' },
           nome: `${item.first_name} ${item.last_name}`,
           prontuario: item.medical_record_number,
           dataNascimento: item.birthdate ? item.birthdate.substring(0, item.birthdate.length - 8) : '0001/01/01',
